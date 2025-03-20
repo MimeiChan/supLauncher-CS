@@ -896,11 +896,24 @@ namespace HiMenu
                 {
                     m_MenuFileName = Path.GetDirectoryName(Application.ExecutablePath);
                     if (!m_MenuFileName.EndsWith("\\")) m_MenuFileName = m_MenuFileName + "\\";
-#if DEBUG
-                    m_MenuFileName += "..\\Release\\";
-                    Directory.SetCurrentDirectory(m_MenuFileName);
-#endif
+                    
+                    // デバッグ時の特殊パスを削除し、安全なパス設定に変更
+                    // ビルドしたアプリケーションと同じディレクトリにMenuFile.MNUを作成
                     m_MenuFileName += "MenuFile.MNU";
+                    
+                    // 必要に応じてディレクトリを作成
+                    string directory = Path.GetDirectoryName(m_MenuFileName);
+                    if (!Directory.Exists(directory))
+                    {
+                        try
+                        {
+                            Directory.CreateDirectory(directory);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("ディレクトリの作成に失敗しました: " + ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
                 }
                 else
                 {
