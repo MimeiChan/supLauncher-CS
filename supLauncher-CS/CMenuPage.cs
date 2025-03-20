@@ -843,17 +843,27 @@ namespace HiMenu
             }
         }
 
-        internal CMenuFileItemInf MenuFileItem(int Index)
+        // C#でインデクサーを使用したプロパティとして正しく実装
+        internal CMenuFileItemInf this[int Index]
         {
-            get 
-            { 
-                return m_MenuFileItem[Index]; 
-            }
+            get { return m_MenuFileItem[Index]; }
             set
             {
                 m_MenuFileItem[Index] = value;
                 m_Changed = true;
             }
+        }
+
+        // 既存のコードとの互換性のために、メソッドも提供
+        internal CMenuFileItemInf GetMenuFileItem(int Index)
+        {
+            return m_MenuFileItem[Index];
+        }
+
+        internal void SetMenuFileItem(int Index, CMenuFileItemInf value)
+        {
+            m_MenuFileItem[Index] = value;
+            m_Changed = true;
         }
 
         internal void MenuFileItemHiddenChanged()
