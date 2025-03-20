@@ -246,7 +246,7 @@ namespace HiMenu
 
             mnuEditMemberPaste.Enabled = (Clipboard.GetData("HiMenuItem") != null);
 
-            mnuEditMemberHidden.Checked = m_CMenuPage.MenuFileItem(CurrentButton).NoUse;
+            mnuEditMemberHidden.Checked = m_CMenuPage[CurrentButton].NoUse;
         }
 
         /// <summary>
@@ -292,29 +292,29 @@ namespace HiMenu
             }
             else if (MenuItem == mnuEditMemberCut || MenuItem == ToolStripMenuItemCut)
             {
-                Clipboard.SetData("HiMenuItem", m_CMenuPage.MenuFileItem(CurrentButton));
-                m_CMenuPage.MenuFileItem(CurrentButton) = new CMenuPage.CMenuFileItemInf();
+                Clipboard.SetData("HiMenuItem", m_CMenuPage[CurrentButton]);
+                m_CMenuPage[CurrentButton] = new CMenuPage.CMenuFileItemInf();
                 SetFormObject();
             }
             else if (MenuItem == mnuEditMemberCopy || MenuItem == ToolStripMenuItemCopy)
             {
-                Clipboard.SetData("HiMenuItem", m_CMenuPage.MenuFileItem(CurrentButton));
+                Clipboard.SetData("HiMenuItem", m_CMenuPage[CurrentButton]);
                 blnMove = false;
             }
             else if (MenuItem == mnuEditMemberPaste || MenuItem == ToolStripMenuItemPaste)
             {
-                m_CMenuPage.MenuFileItem(CurrentButton) = (CMenuPage.CMenuFileItemInf)Clipboard.GetData("HiMenuItem");
+                m_CMenuPage[CurrentButton] = (CMenuPage.CMenuFileItemInf)Clipboard.GetData("HiMenuItem");
                 SetFormObject();
             }
             else if (MenuItem == mnuEditMemberDelete || MenuItem == ToolStripMenuItemDelete)
             {
-                m_CMenuPage.MenuFileItem(CurrentButton) = new CMenuPage.CMenuFileItemInf();
+                m_CMenuPage[CurrentButton] = new CMenuPage.CMenuFileItemInf();
                 SetFormObject();
             }
             else if (MenuItem == mnuEditMemberHidden || MenuItem == ToolStripMenuItemHidden)
             {
                 m_CMenuPage.MenuFileItemHiddenChanged();
-                SetButtonDisp(CurrentButton, m_CMenuPage.MenuFileItem(CurrentButton).NoUse);
+                SetButtonDisp(CurrentButton, m_CMenuPage[CurrentButton].NoUse);
             }
             else if (MenuItem == mnuEditMemberEscape || MenuItem == ToolStripMenuItemEscape)
             {
@@ -351,7 +351,7 @@ namespace HiMenu
         private void cmdMenuButton_Enter(object Sender, EventArgs eventArgs)
         {
             int Index = m_MenuButtons.IndexOf((Button)Sender);
-            ToolStripStatusLabelGuide.Text = m_CMenuPage.MenuFileItem(Index).Comment;
+            ToolStripStatusLabelGuide.Text = m_CMenuPage[Index].Comment;
             m_CMenuPage.CurrentButton = Index;
             SaveCurrentButton = Index;
 
@@ -376,7 +376,7 @@ namespace HiMenu
             int Index = m_MenuButtons.IndexOf((Button)Sender);
             if (SaveCurrentButton != Index)
             {
-                ToolStripStatusLabelGuide.Text = m_CMenuPage.MenuFileItem(Index).Comment;
+                ToolStripStatusLabelGuide.Text = m_CMenuPage[Index].Comment;
                 SaveCurrentButton = Index;
             }
         }
@@ -665,7 +665,7 @@ namespace HiMenu
 
                 for (intIndexRow = 0; intIndexRow < m_CMenuPage.MenuRows; intIndexRow++)
                 {
-                    if (m_CMenuPage.LockOn && m_CMenuPage.MenuFileItem(intIndex).NoUse)
+                    if (m_CMenuPage.LockOn && m_CMenuPage[intIndex].NoUse)
                     {
                         blnUseFlag = false;
                     }
@@ -691,7 +691,7 @@ namespace HiMenu
                         button.UseVisualStyleBackColor = false;
                     }
                     
-                    button.Text = m_CMenuPage.MenuFileItem(intIndex).Title;
+                    button.Text = m_CMenuPage[intIndex].Title;
                     
                     if (m_CMenuPage.LockOn == false)
                     {
@@ -700,7 +700,7 @@ namespace HiMenu
                             button.Text = "＜ＥＳＣ＞" + button.Text;
                         }
                         
-                        if (m_CMenuPage.MenuFileItem(intIndex).NoUse)
+                        if (m_CMenuPage[intIndex].NoUse)
                         {
                             button.Text = "＜非表示＞" + button.Text;
                         }
@@ -787,9 +787,9 @@ namespace HiMenu
             if (blnMode)
             {
                 // ボタン表示
-                if (m_CMenuPage.MenuFileItem(intIndex).NoUse)
+                if (m_CMenuPage[intIndex].NoUse)
                 {
-                    m_CMenuPage.MenuFileItem(intIndex).NoUse = false;
+                    m_CMenuPage[intIndex].NoUse = false;
                 }
                 else
                 {
@@ -799,9 +799,9 @@ namespace HiMenu
             else
             {
                 // ボタン非表示
-                if (m_CMenuPage.MenuFileItem(intIndex).NoUse == false)
+                if (m_CMenuPage[intIndex].NoUse == false)
                 {
-                    m_CMenuPage.MenuFileItem(intIndex).NoUse = true;
+                    m_CMenuPage[intIndex].NoUse = true;
                 }
                 else
                 {
@@ -822,7 +822,7 @@ namespace HiMenu
         /// </summary>
         private void ButtonClick(int intIndex)
         {
-            ToolStripStatusLabelGuide.Text = m_CMenuPage.MenuFileItem(intIndex).Comment;
+            ToolStripStatusLabelGuide.Text = m_CMenuPage[intIndex].Comment;
 
             // 動作モードチェック（編集モード／実行モード／移動モード）
             switch (m_CMenuPage.LockOn)
@@ -870,7 +870,7 @@ namespace HiMenu
             string strNextMenuPath = "";
             int intRevIndex = 0;
 
-            CMenuPage.CMenuFileItemInf item = m_CMenuPage.MenuFileItem(Index);
+            CMenuPage.CMenuFileItemInf item = m_CMenuPage[Index];
 
             if (item.Title.Length != 0)
             {
