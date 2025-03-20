@@ -15,6 +15,10 @@ namespace HiMenu
 
         private List<Button> m_MenuButtons = new List<Button>();
 
+        // XML関連メニュー項目
+        private ToolStripMenuItem mnuFileMemberNewXml;
+        private ToolStripMenuItem mnuFileMemberOpenXml;
+
         private int SaveCurrentButton; // マウス移動によるアイテムコメント表示中ボタンインデックス
 
         #region フォームオーバーライド関数
@@ -1250,11 +1254,11 @@ namespace HiMenu
         private void AddXmlMenuItems()
         {
             // XML形式で新規作成
-            ToolStripMenuItem mnuFileMemberNewXml = new ToolStripMenuItem("新規作成(&N)...");
+            mnuFileMemberNewXml = new ToolStripMenuItem("新規作成(&N)...");
             mnuFileMemberNewXml.ShortcutKeys = Keys.Control | Keys.N;
             
             // XML形式を開く
-            ToolStripMenuItem mnuFileMemberOpenXml = new ToolStripMenuItem("開く(&O)...");
+            mnuFileMemberOpenXml = new ToolStripMenuItem("開く(&O)...");
             mnuFileMemberOpenXml.ShortcutKeys = Keys.Control | Keys.O;
             
             // メニューに追加
