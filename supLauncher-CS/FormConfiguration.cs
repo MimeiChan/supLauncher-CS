@@ -113,6 +113,15 @@ namespace HiMenu
         /// </summary>
         private void cmdOK_Click(object sender, EventArgs e)
         {
+            ApplySettings();
+            this.DialogResult = DialogResult.OK;
+        }
+
+        /// <summary>
+        /// フォームの設定をCMenuPageに適用する
+        /// </summary>
+        private void ApplySettings()
+        {
             // フォームの値を設定値に反映
             m_CMenuPage.MenuTitle = txtTitle.Text;
             m_CMenuPage.MenuRows = (int)nudRows.Value;
