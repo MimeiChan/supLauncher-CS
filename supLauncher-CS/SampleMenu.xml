@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HiMenu version="1.0.0.0">
+  <EnvironmentTitle>
+    <Title>サンプルメニュー</Title>
+    <Items>
+      <Item index="1">
+        <Title>メモ帳</Title>
+        <Comment>Windowsのメモ帳を起動します</Comment>
+        <Command>notepad.exe</Command>
+        <Flag>---</Flag>
+      </Item>
+      <Item index="2">
+        <Title>電卓</Title>
+        <Comment>Windowsの電卓を起動します</Comment>
+        <Command>calc.exe</Command>
+        <Flag>---</Flag>
+      </Item>
+      <Item index="3">
+        <Title>コマンドプロンプト</Title>
+        <Comment>コマンドプロンプトを起動します</Comment>
+        <Command>cmd.exe</Command>
+        <Flag>-*-</Flag>
+      </Item>
+      <Item index="11">
+        <Title>終了</Title>
+        <Comment>アプリケーションを終了します</Comment>
+        <Command></Command>
+        <Flag>-*-</Flag>
+      </Item>
+    </Items>
+  </EnvironmentTitle>
+  <ExecuteEnvironment>
+    <Rows>6</Rows>
+    <Cols>2</Cols>
+    <Width>559</Width>
+    <Height>406</Height>
+    <FontName>ＭＳ Ｐゴシック</FontName>
+    <FontSize>12</FontSize>
+    <FontBold>True</FontBold>
+    <FontItalic>False</FontItalic>
+    <FontUnderline>False</FontUnderline>
+    <DispPosition>3</DispPosition>
+    <BGFile></BGFile>
+    <BGTile>False</BGTile>
+    <MenuVisible>True</MenuVisible>
+    <StatusBarVisible>True</StatusBarVisible>
+    <BackColor>-2147483633</BackColor>
+    <ButtonColor>-2147483633</ButtonColor>
+    <TextColor>-2147483640</TextColor>
+    <HighLightTextColor>-2147483635</HighLightTextColor>
+    <CancelButton>10</CancelButton>
+  </ExecuteEnvironment>
+  <Current>
+    <CurrentX>100</CurrentX>
+    <CurrentY>100</CurrentY>
+  </Current>
+</HiMenu>
