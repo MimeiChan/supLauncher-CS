@@ -25,7 +25,7 @@ namespace HiMenu
         {
             int CurrentButton = m_CMenuPage.CurrentButton;
 
-            CMenuPage.CMenuFileItemInf menuItem = m_CMenuPage.MenuFileItem(CurrentButton);
+            CMenuPage.CMenuFileItemInf menuItem = m_CMenuPage[CurrentButton];
 
             txtTitle.Text = menuItem.Title;
             txtComment.Text = menuItem.Comment;
@@ -67,7 +67,7 @@ namespace HiMenu
         {
             int CurrentButton = m_CMenuPage.CurrentButton;
 
-            CMenuPage.CMenuFileItemInf menuItem = m_CMenuPage.MenuFileItem(CurrentButton);
+            CMenuPage.CMenuFileItemInf menuItem = m_CMenuPage[CurrentButton];
 
             menuItem.Title = txtTitle.Text;
             menuItem.Comment = txtComment.Text;
@@ -101,7 +101,7 @@ namespace HiMenu
 
             menuItem.NoUse = chkNoUse.Checked;
 
-            m_CMenuPage.MenuFileItem(CurrentButton) = menuItem;
+            m_CMenuPage[CurrentButton] = menuItem;
         }
 
         /// <summary>
