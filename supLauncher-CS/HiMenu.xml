@@ -59,6 +59,308 @@
             パス名に空白が含まれる場合にダブルコーテーションで囲む
             </summary>
         </member>
+        <member name="M:HiMenu.CMenuPage.#ctor">
+            <summary>
+            コンストラクタ（privateでシングルトンパターンを実現）
+            </summary>
+        </member>
+        <member name="M:HiMenu.CMenuPage.GetInstance">
+            <summary>
+            シングルトンインスタンスを取得するメソッド
+            </summary>
+            <returns>CMenuPageのインスタンス</returns>
+        </member>
+        <member name="M:HiMenu.CMenuPage.Initalize">
+            <summary>
+            メニューページの設定を初期化する
+            デフォルトの値をすべてのプロパティに設定する
+            </summary>
+        </member>
+        <member name="M:HiMenu.CMenuPage.MenuFileRead">
+            <summary>
+            メニューファイルを読み込み、設定を適用する
+            ファイルが存在しない場合は初期化のみを行う
+            </summary>
+        </member>
+        <member name="M:HiMenu.CMenuPage.MenuFileWrite">
+            <summary>
+            メニューの設定をファイルに保存する
+            変更がある場合はユーザーに保存の確認を行う
+            </summary>
+            <returns>保存処理の結果を示すDialogResult</returns>
+        </member>
+        <member name="M:HiMenu.CMenuPage.MenuFileWriteBody">
+            <summary>
+            メニューの設定内容をファイルに書き込む
+            </summary>
+            <returns>書き込みが成功した場合はtrue</returns>
+        </member>
+        <member name="M:HiMenu.CMenuPage.MenuFileWriteLocateOnly">
+            <summary>
+            メニューの位置情報のみをファイルに書き込む
+            </summary>
+        </member>
+        <member name="M:HiMenu.CMenuPage.MenuItemsCountSet(System.Int32)">
+            <summary>
+            メニュー項目の数を設定された行数と列数に合わせて調整する
+            </summary>
+            <param name="intTargetItemCountArg">設定する項目数（-1の場合は現在の行数×列数）</param>
+        </member>
+        <member name="P:HiMenu.CMenuPage.CurrentX">
+            <summary>
+            メニューフォームのX座標を取得または設定
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.CurrentY">
+            <summary>
+            メニューフォームのY座標を取得または設定
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.LockOn">
+            <summary>
+            メニューのロック状態を取得または設定
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.MenuRows">
+            <summary>
+            メニューの行数を取得または設定
+            値が変更された場合は変更フラグを設定する
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.MenuCols">
+            <summary>
+            メニューの列数を取得または設定
+            値が変更された場合は変更フラグを設定する
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.MenuWidth">
+            <summary>
+            メニューフォームの幅を取得または設定
+            値が変更された場合は変更フラグを設定する
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.MenuHeight">
+            <summary>
+            メニューフォームの高さを取得または設定
+            値が変更された場合は変更フラグを設定する
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.MenuTitle">
+            <summary>
+            メニューのタイトルを取得または設定
+            値が変更された場合は変更フラグを設定する
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.CancelButton">
+            <summary>
+            キャンセルボタンのインデックスを取得または設定
+            値が変更された場合は変更フラグを設定する
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.FontName">
+            <summary>
+            フォント名を取得または設定
+            値が変更された場合は変更フラグを設定する
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.FontSize">
+            <summary>
+            フォントサイズを取得または設定
+            値が変更された場合は変更フラグを設定する
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.FontBold">
+            <summary>
+            フォントの太字設定を取得または設定
+            値が変更された場合は変更フラグを設定する
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.FontItalic">
+            <summary>
+            フォントの斜体設定を取得または設定
+            値が変更された場合は変更フラグを設定する
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.FontUnderline">
+            <summary>
+            フォントの下線設定を取得または設定
+            値が変更された場合は変更フラグを設定する
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.DispPosition">
+            <summary>
+            メニューの表示位置を取得または設定
+            値が変更された場合は変更フラグを設定し、ルートメニューの場合は表示位置を記憶する
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.BGFile">
+            <summary>
+            背景画像ファイル名を取得または設定
+            値が変更された場合は変更フラグを設定する
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.BGTile">
+            <summary>
+            背景画像のタイル表示設定を取得または設定
+            値が変更された場合は変更フラグを設定する
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.MenuVisible">
+            <summary>
+            メニューの表示状態を取得または設定
+            値が変更された場合は変更フラグを設定する
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.StatusBarVisible">
+            <summary>
+            ステータスバーの表示状態を取得または設定
+            値が変更された場合は変更フラグを設定する
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.LockPassword">
+            <summary>
+            メニューのロックパスワードを取得または設定
+            値が変更された場合は変更フラグを設定する
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.BackColor">
+            <summary>
+            メニューの背景色を取得または設定
+            値が変更された場合は変更フラグを設定する
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.ButtonColor">
+            <summary>
+            ボタンの背景色を取得または設定
+            値が変更された場合は変更フラグを設定する
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.TextColor">
+            <summary>
+            ボタンのテキスト色を取得または設定
+            値が変更された場合は変更フラグを設定する
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.HighLightTextColor">
+            <summary>
+            ボタンの選択時テキスト色を取得または設定
+            値が変更された場合は変更フラグを設定する
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.Item(System.Int32)">
+            <summary>
+            メニュー項目を取得または設定するインデクサー
+            値が変更された場合は変更フラグを設定する
+            </summary>
+            <param name="Index">メニュー項目のインデックス</param>
+        </member>
+        <member name="M:HiMenu.CMenuPage.GetMenuFileItem(System.Int32)">
+            <summary>
+            メニュー項目を取得する
+            </summary>
+            <param name="Index">メニュー項目のインデックス</param>
+            <returns>指定されたインデックスのメニュー項目</returns>
+        </member>
+        <member name="M:HiMenu.CMenuPage.SetMenuFileItem(System.Int32,HiMenu.CMenuPage.CMenuFileItemInf)">
+            <summary>
+            メニュー項目を設定する
+            </summary>
+            <param name="Index">メニュー項目のインデックス</param>
+            <param name="value">設定するメニュー項目</param>
+        </member>
+        <member name="M:HiMenu.CMenuPage.MenuFileItemHiddenChanged">
+            <summary>
+            メニュー項目の表示状態が変更されたことを通知する
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.MenuForm">
+            <summary>
+            メニューフォームへの参照を取得または設定
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.CurrentButton">
+            <summary>
+            現在選択されているボタンのインデックスを取得または設定
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.MenuFileName">
+            <summary>
+            メニューファイル名を取得または設定
+            ファイル名が空の場合はデフォルトのパスを設定する
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.Font">
+            <summary>
+            メニューで使用するフォントを取得
+            現在の設定に基づいてフォントオブジェクトを生成する
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.Changed">
+            <summary>
+            メニューの内容が変更されているかどうかを取得
+            </summary>
+        </member>
+        <member name="P:HiMenu.CMenuPage.RootMenuDispPosition">
+            <summary>
+            ルートメニューの表示位置を取得
+            </summary>
+        </member>
+        <member name="T:HiMenu.CMenuChain">
+            <summary>
+            メニュー画面遷移履歴を管理するクラス
+            メニュー階層の履歴を保持し、前のメニューに戻るための情報を管理する
+            </summary>
+        </member>
+        <member name="F:HiMenu.CMenuChain.m_Obj">
+            <summary>
+            シングルトンインスタンス
+            </summary>
+        </member>
+        <member name="F:HiMenu.CMenuChain.m_MenuFileSearch">
+            <summary>
+            メニューファイル名の検索用リスト（大文字変換済み）
+            </summary>
+        </member>
+        <member name="F:HiMenu.CMenuChain.m_MenuFile">
+            <summary>
+            メニューファイル名のリスト（元の文字列）
+            </summary>
+        </member>
+        <member name="F:HiMenu.CMenuChain.m_LastItem">
+            <summary>
+            各メニュー画面での最後に選択されていた項目のインデックスリスト
+            </summary>
+        </member>
+        <member name="M:HiMenu.CMenuChain.#ctor">
+            <summary>
+            コンストラクタ（privateでシングルトンパターンを実現）
+            </summary>
+        </member>
+        <member name="M:HiMenu.CMenuChain.GetInstance">
+            <summary>
+            シングルトンインスタンスを取得するメソッド
+            </summary>
+            <returns>CMenuChainのインスタンス</returns>
+        </member>
+        <member name="M:HiMenu.CMenuChain.Push(System.Int32)">
+            <summary>
+            メニュー階層履歴に現在のメニュー情報を追加する
+            同じメニューに戻った場合は、以降の履歴を削除する
+            </summary>
+            <param name="LastItem">現在のメニューで最後に選択されていた項目のインデックス</param>
+        </member>
+        <member name="M:HiMenu.CMenuChain.Pop">
+            <summary>
+            メニュー階層履歴から一つ前のメニュー情報を取得し、履歴から削除する
+            </summary>
+            <returns>前のメニューで最後に選択されていた項目のインデックス</returns>
+        </member>
+        <member name="M:HiMenu.CMenuChain.IsRootMenu">
+            <summary>
+            現在のメニューがルートメニュー（最上位階層）かどうかを判定する
+            </summary>
+            <returns>ルートメニューの場合はtrue、それ以外はfalse</returns>
+        </member>
         <member name="M:HiMenu.FormButtonEdit.#ctor">
             <summary>
             コンストラクタ
@@ -162,6 +464,11 @@
         <member name="M:HiMenu.FormConfiguration.cmdOK_Click(System.Object,System.EventArgs)">
             <summary>
             OKボタンクリック時のイベント
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormConfiguration.ApplySettings">
+            <summary>
+            フォームの設定をCMenuPageに適用する
             </summary>
         </member>
         <member name="M:HiMenu.FormConfiguration.cmdBGFileBrowse_Click(System.Object,System.EventArgs)">

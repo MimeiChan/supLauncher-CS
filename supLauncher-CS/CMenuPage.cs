@@ -447,7 +447,7 @@ namespace HiMenu
 
             using (StreamWriter txWriter = new StreamWriter(m_MenuFileName, false, encoding))
             {
-                txWriter.WriteLine("; TDC Menu Version" + Application.ProductVersion.Split('.')[0] + "." + Application.ProductVersion.Split('.')[1] + Application.ProductVersion.Split('.')[2] + " 用定義ファイル");
+                txWriter.WriteLine("; Launcher Version" + Application.ProductVersion.Split('.')[0] + "." + Application.ProductVersion.Split('.')[1] + Application.ProductVersion.Split('.')[2] + " 用定義ファイル");
                 txWriter.WriteLine("[EnvironmentTitle]");
                 txWriter.WriteLine("Title00=" + m_MenuTitle);
                 for (int intIndex = 0; intIndex < (m_MenuRows * m_MenuCols); intIndex++)

@@ -43,29 +43,29 @@ namespace HiMenu
             this.optDispositionCurrent = new System.Windows.Forms.RadioButton();
             this.optDispositionRoot = new System.Windows.Forms.RadioButton();
             this.gbMenuOption = new System.Windows.Forms.GroupBox();
-            this.lblBGFile = new System.Windows.Forms.Label();
-            this.txtBGFile = new System.Windows.Forms.TextBox();
-            this.cmdBGFileBrowse = new System.Windows.Forms.Button();
-            this.chkBGTile = new System.Windows.Forms.CheckBox();
-            this.chkMenuVisible = new System.Windows.Forms.CheckBox();
             this.chkStatusVisible = new System.Windows.Forms.CheckBox();
+            this.chkMenuVisible = new System.Windows.Forms.CheckBox();
+            this.chkBGTile = new System.Windows.Forms.CheckBox();
+            this.cmdBGFileBrowse = new System.Windows.Forms.Button();
+            this.txtBGFile = new System.Windows.Forms.TextBox();
+            this.lblBGFile = new System.Windows.Forms.Label();
             this.gbFont = new System.Windows.Forms.GroupBox();
-            this.lblFontName = new System.Windows.Forms.Label();
-            this.lblFontSize = new System.Windows.Forms.Label();
-            this.cmbFontName = new System.Windows.Forms.ComboBox();
-            this.nudFontSize = new System.Windows.Forms.NumericUpDown();
-            this.chkFontBold = new System.Windows.Forms.CheckBox();
-            this.chkFontItalic = new System.Windows.Forms.CheckBox();
             this.chkFontUnderline = new System.Windows.Forms.CheckBox();
+            this.chkFontItalic = new System.Windows.Forms.CheckBox();
+            this.chkFontBold = new System.Windows.Forms.CheckBox();
+            this.nudFontSize = new System.Windows.Forms.NumericUpDown();
+            this.cmbFontName = new System.Windows.Forms.ComboBox();
+            this.lblFontSize = new System.Windows.Forms.Label();
+            this.lblFontName = new System.Windows.Forms.Label();
             this.gbColors = new System.Windows.Forms.GroupBox();
-            this.lblBackColor = new System.Windows.Forms.Label();
-            this.lblButtonColor = new System.Windows.Forms.Label();
-            this.lblTextColor = new System.Windows.Forms.Label();
-            this.lblHighlightTextColor = new System.Windows.Forms.Label();
-            this.cmdBackColor = new System.Windows.Forms.Button();
-            this.cmdButtonColor = new System.Windows.Forms.Button();
-            this.cmdTextColor = new System.Windows.Forms.Button();
             this.cmdHighlightTextColor = new System.Windows.Forms.Button();
+            this.cmdTextColor = new System.Windows.Forms.Button();
+            this.cmdButtonColor = new System.Windows.Forms.Button();
+            this.cmdBackColor = new System.Windows.Forms.Button();
+            this.lblHighlightTextColor = new System.Windows.Forms.Label();
+            this.lblTextColor = new System.Windows.Forms.Label();
+            this.lblButtonColor = new System.Windows.Forms.Label();
+            this.lblBackColor = new System.Windows.Forms.Label();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nudRows)).BeginInit();
@@ -119,7 +119,7 @@ namespace HiMenu
             this.lblWidth.Name = "lblWidth";
             this.lblWidth.Size = new System.Drawing.Size(100, 19);
             this.lblWidth.TabIndex = 4;
-            this.lblWidth.Text = "フォーム幅:";
+            this.lblWidth.Text = "メニュー幅:";
             this.lblWidth.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblHeight
@@ -128,7 +128,7 @@ namespace HiMenu
             this.lblHeight.Name = "lblHeight";
             this.lblHeight.Size = new System.Drawing.Size(100, 19);
             this.lblHeight.TabIndex = 5;
-            this.lblHeight.Text = "フォーム高さ:";
+            this.lblHeight.Text = "メニュー高さ:";
             this.lblHeight.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // nudRows
@@ -257,7 +257,7 @@ namespace HiMenu
             this.optDispositionCurrent.AutoSize = true;
             this.optDispositionCurrent.Location = new System.Drawing.Point(16, 43);
             this.optDispositionCurrent.Name = "optDispositionCurrent";
-            this.optDispositionCurrent.Size = new System.Drawing.Size(149, 16);
+            this.optDispositionCurrent.Size = new System.Drawing.Size(154, 16);
             this.optDispositionCurrent.TabIndex = 1;
             this.optDispositionCurrent.TabStop = true;
             this.optDispositionCurrent.Text = "現在の同じ位置に表示する";
@@ -268,7 +268,7 @@ namespace HiMenu
             this.optDispositionRoot.AutoSize = true;
             this.optDispositionRoot.Location = new System.Drawing.Point(16, 19);
             this.optDispositionRoot.Name = "optDispositionRoot";
-            this.optDispositionRoot.Size = new System.Drawing.Size(173, 16);
+            this.optDispositionRoot.Size = new System.Drawing.Size(178, 16);
             this.optDispositionRoot.TabIndex = 0;
             this.optDispositionRoot.TabStop = true;
             this.optDispositionRoot.Text = "最初のメニューの位置に表示する";
@@ -289,40 +289,15 @@ namespace HiMenu
             this.gbMenuOption.TabStop = false;
             this.gbMenuOption.Text = "メニューオプション";
             // 
-            // lblBGFile
+            // chkStatusVisible
             // 
-            this.lblBGFile.AutoSize = true;
-            this.lblBGFile.Location = new System.Drawing.Point(7, 21);
-            this.lblBGFile.Name = "lblBGFile";
-            this.lblBGFile.Size = new System.Drawing.Size(52, 12);
-            this.lblBGFile.TabIndex = 0;
-            this.lblBGFile.Text = "背景画像";
-            // 
-            // txtBGFile
-            // 
-            this.txtBGFile.Location = new System.Drawing.Point(61, 18);
-            this.txtBGFile.Name = "txtBGFile";
-            this.txtBGFile.Size = new System.Drawing.Size(123, 19);
-            this.txtBGFile.TabIndex = 0;
-            // 
-            // cmdBGFileBrowse
-            // 
-            this.cmdBGFileBrowse.Location = new System.Drawing.Point(190, 17);
-            this.cmdBGFileBrowse.Name = "cmdBGFileBrowse";
-            this.cmdBGFileBrowse.Size = new System.Drawing.Size(28, 20);
-            this.cmdBGFileBrowse.TabIndex = 1;
-            this.cmdBGFileBrowse.Text = "...";
-            this.cmdBGFileBrowse.UseVisualStyleBackColor = true;
-            // 
-            // chkBGTile
-            // 
-            this.chkBGTile.AutoSize = true;
-            this.chkBGTile.Location = new System.Drawing.Point(61, 43);
-            this.chkBGTile.Name = "chkBGTile";
-            this.chkBGTile.Size = new System.Drawing.Size(138, 16);
-            this.chkBGTile.TabIndex = 2;
-            this.chkBGTile.Text = "背景画像をタイル表示する";
-            this.chkBGTile.UseVisualStyleBackColor = true;
+            this.chkStatusVisible.AutoSize = true;
+            this.chkStatusVisible.Location = new System.Drawing.Point(61, 83);
+            this.chkStatusVisible.Name = "chkStatusVisible";
+            this.chkStatusVisible.Size = new System.Drawing.Size(122, 16);
+            this.chkStatusVisible.TabIndex = 4;
+            this.chkStatusVisible.Text = "ステータスバーを表示";
+            this.chkStatusVisible.UseVisualStyleBackColor = true;
             // 
             // chkMenuVisible
             // 
@@ -334,15 +309,40 @@ namespace HiMenu
             this.chkMenuVisible.Text = "メニューバーを表示";
             this.chkMenuVisible.UseVisualStyleBackColor = true;
             // 
-            // chkStatusVisible
+            // chkBGTile
             // 
-            this.chkStatusVisible.AutoSize = true;
-            this.chkStatusVisible.Location = new System.Drawing.Point(61, 83);
-            this.chkStatusVisible.Name = "chkStatusVisible";
-            this.chkStatusVisible.Size = new System.Drawing.Size(127, 16);
-            this.chkStatusVisible.TabIndex = 4;
-            this.chkStatusVisible.Text = "ステータスバーを表示";
-            this.chkStatusVisible.UseVisualStyleBackColor = true;
+            this.chkBGTile.AutoSize = true;
+            this.chkBGTile.Location = new System.Drawing.Point(61, 43);
+            this.chkBGTile.Name = "chkBGTile";
+            this.chkBGTile.Size = new System.Drawing.Size(151, 16);
+            this.chkBGTile.TabIndex = 2;
+            this.chkBGTile.Text = "背景画像をタイル表示する";
+            this.chkBGTile.UseVisualStyleBackColor = true;
+            // 
+            // cmdBGFileBrowse
+            // 
+            this.cmdBGFileBrowse.Location = new System.Drawing.Point(190, 17);
+            this.cmdBGFileBrowse.Name = "cmdBGFileBrowse";
+            this.cmdBGFileBrowse.Size = new System.Drawing.Size(28, 20);
+            this.cmdBGFileBrowse.TabIndex = 1;
+            this.cmdBGFileBrowse.Text = "...";
+            this.cmdBGFileBrowse.UseVisualStyleBackColor = true;
+            // 
+            // txtBGFile
+            // 
+            this.txtBGFile.Location = new System.Drawing.Point(61, 18);
+            this.txtBGFile.Name = "txtBGFile";
+            this.txtBGFile.Size = new System.Drawing.Size(123, 19);
+            this.txtBGFile.TabIndex = 0;
+            // 
+            // lblBGFile
+            // 
+            this.lblBGFile.AutoSize = true;
+            this.lblBGFile.Location = new System.Drawing.Point(7, 21);
+            this.lblBGFile.Name = "lblBGFile";
+            this.lblBGFile.Size = new System.Drawing.Size(53, 12);
+            this.lblBGFile.TabIndex = 0;
+            this.lblBGFile.Text = "背景画像";
             // 
             // gbFont
             // 
@@ -360,32 +360,35 @@ namespace HiMenu
             this.gbFont.TabStop = false;
             this.gbFont.Text = "フォント設定";
             // 
-            // lblFontName
+            // chkFontUnderline
             // 
-            this.lblFontName.AutoSize = true;
-            this.lblFontName.Location = new System.Drawing.Point(8, 23);
-            this.lblFontName.Name = "lblFontName";
-            this.lblFontName.Size = new System.Drawing.Size(52, 12);
-            this.lblFontName.TabIndex = 0;
-            this.lblFontName.Text = "フォント名";
+            this.chkFontUnderline.AutoSize = true;
+            this.chkFontUnderline.Location = new System.Drawing.Point(118, 75);
+            this.chkFontUnderline.Name = "chkFontUnderline";
+            this.chkFontUnderline.Size = new System.Drawing.Size(60, 16);
+            this.chkFontUnderline.TabIndex = 4;
+            this.chkFontUnderline.Text = "下線付";
+            this.chkFontUnderline.UseVisualStyleBackColor = true;
             // 
-            // lblFontSize
+            // chkFontItalic
             // 
-            this.lblFontSize.AutoSize = true;
-            this.lblFontSize.Location = new System.Drawing.Point(8, 50);
-            this.lblFontSize.Name = "lblFontSize";
-            this.lblFontSize.Size = new System.Drawing.Size(53, 12);
-            this.lblFontSize.TabIndex = 1;
-            this.lblFontSize.Text = "フォント幅";
+            this.chkFontItalic.AutoSize = true;
+            this.chkFontItalic.Location = new System.Drawing.Point(64, 75);
+            this.chkFontItalic.Name = "chkFontItalic";
+            this.chkFontItalic.Size = new System.Drawing.Size(48, 16);
+            this.chkFontItalic.TabIndex = 3;
+            this.chkFontItalic.Text = "斜体";
+            this.chkFontItalic.UseVisualStyleBackColor = true;
             // 
-            // cmbFontName
+            // chkFontBold
             // 
-            this.cmbFontName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbFontName.FormattingEnabled = true;
-            this.cmbFontName.Location = new System.Drawing.Point(66, 20);
-            this.cmbFontName.Name = "cmbFontName";
-            this.cmbFontName.Size = new System.Drawing.Size(155, 20);
-            this.cmbFontName.TabIndex = 0;
+            this.chkFontBold.AutoSize = true;
+            this.chkFontBold.Location = new System.Drawing.Point(10, 75);
+            this.chkFontBold.Name = "chkFontBold";
+            this.chkFontBold.Size = new System.Drawing.Size(48, 16);
+            this.chkFontBold.TabIndex = 2;
+            this.chkFontBold.Text = "太字";
+            this.chkFontBold.UseVisualStyleBackColor = true;
             // 
             // nudFontSize
             // 
@@ -415,35 +418,32 @@ namespace HiMenu
             0,
             0});
             // 
-            // chkFontBold
+            // cmbFontName
             // 
-            this.chkFontBold.AutoSize = true;
-            this.chkFontBold.Location = new System.Drawing.Point(10, 75);
-            this.chkFontBold.Name = "chkFontBold";
-            this.chkFontBold.Size = new System.Drawing.Size(48, 16);
-            this.chkFontBold.TabIndex = 2;
-            this.chkFontBold.Text = "太字";
-            this.chkFontBold.UseVisualStyleBackColor = true;
+            this.cmbFontName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbFontName.FormattingEnabled = true;
+            this.cmbFontName.Location = new System.Drawing.Point(66, 20);
+            this.cmbFontName.Name = "cmbFontName";
+            this.cmbFontName.Size = new System.Drawing.Size(155, 20);
+            this.cmbFontName.TabIndex = 0;
             // 
-            // chkFontItalic
+            // lblFontSize
             // 
-            this.chkFontItalic.AutoSize = true;
-            this.chkFontItalic.Location = new System.Drawing.Point(64, 75);
-            this.chkFontItalic.Name = "chkFontItalic";
-            this.chkFontItalic.Size = new System.Drawing.Size(48, 16);
-            this.chkFontItalic.TabIndex = 3;
-            this.chkFontItalic.Text = "斜体";
-            this.chkFontItalic.UseVisualStyleBackColor = true;
+            this.lblFontSize.AutoSize = true;
+            this.lblFontSize.Location = new System.Drawing.Point(8, 50);
+            this.lblFontSize.Name = "lblFontSize";
+            this.lblFontSize.Size = new System.Drawing.Size(50, 12);
+            this.lblFontSize.TabIndex = 1;
+            this.lblFontSize.Text = "フォント幅";
             // 
-            // chkFontUnderline
+            // lblFontName
             // 
-            this.chkFontUnderline.AutoSize = true;
-            this.chkFontUnderline.Location = new System.Drawing.Point(118, 75);
-            this.chkFontUnderline.Name = "chkFontUnderline";
-            this.chkFontUnderline.Size = new System.Drawing.Size(60, 16);
-            this.chkFontUnderline.TabIndex = 4;
-            this.chkFontUnderline.Text = "下線付";
-            this.chkFontUnderline.UseVisualStyleBackColor = true;
+            this.lblFontName.AutoSize = true;
+            this.lblFontName.Location = new System.Drawing.Point(8, 23);
+            this.lblFontName.Name = "lblFontName";
+            this.lblFontName.Size = new System.Drawing.Size(50, 12);
+            this.lblFontName.TabIndex = 0;
+            this.lblFontName.Text = "フォント名";
             // 
             // gbColors
             // 
@@ -462,61 +462,16 @@ namespace HiMenu
             this.gbColors.TabStop = false;
             this.gbColors.Text = "色設定";
             // 
-            // lblBackColor
+            // cmdHighlightTextColor
             // 
-            this.lblBackColor.AutoSize = true;
-            this.lblBackColor.Location = new System.Drawing.Point(7, 25);
-            this.lblBackColor.Name = "lblBackColor";
-            this.lblBackColor.Size = new System.Drawing.Size(53, 12);
-            this.lblBackColor.TabIndex = 0;
-            this.lblBackColor.Text = "背景色：";
-            // 
-            // lblButtonColor
-            // 
-            this.lblButtonColor.AutoSize = true;
-            this.lblButtonColor.Location = new System.Drawing.Point(7, 51);
-            this.lblButtonColor.Name = "lblButtonColor";
-            this.lblButtonColor.Size = new System.Drawing.Size(65, 12);
-            this.lblButtonColor.TabIndex = 1;
-            this.lblButtonColor.Text = "ボタン色：";
-            // 
-            // lblTextColor
-            // 
-            this.lblTextColor.AutoSize = true;
-            this.lblTextColor.Location = new System.Drawing.Point(7, 77);
-            this.lblTextColor.Name = "lblTextColor";
-            this.lblTextColor.Size = new System.Drawing.Size(80, 12);
-            this.lblTextColor.TabIndex = 2;
-            this.lblTextColor.Text = "文字色(通常)：";
-            // 
-            // lblHighlightTextColor
-            // 
-            this.lblHighlightTextColor.AutoSize = true;
-            this.lblHighlightTextColor.Location = new System.Drawing.Point(7, 103);
-            this.lblHighlightTextColor.Name = "lblHighlightTextColor";
-            this.lblHighlightTextColor.Size = new System.Drawing.Size(87, 12);
-            this.lblHighlightTextColor.TabIndex = 3;
-            this.lblHighlightTextColor.Text = "文字色(選択中)：";
-            // 
-            // cmdBackColor
-            // 
-            this.cmdBackColor.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.cmdBackColor.Location = new System.Drawing.Point(97, 22);
-            this.cmdBackColor.Name = "cmdBackColor";
-            this.cmdBackColor.Size = new System.Drawing.Size(124, 19);
-            this.cmdBackColor.TabIndex = 0;
-            this.cmdBackColor.Text = "変更...";
-            this.cmdBackColor.UseVisualStyleBackColor = false;
-            // 
-            // cmdButtonColor
-            // 
-            this.cmdButtonColor.BackColor = System.Drawing.SystemColors.Control;
-            this.cmdButtonColor.Location = new System.Drawing.Point(97, 48);
-            this.cmdButtonColor.Name = "cmdButtonColor";
-            this.cmdButtonColor.Size = new System.Drawing.Size(124, 19);
-            this.cmdButtonColor.TabIndex = 1;
-            this.cmdButtonColor.Text = "変更...";
-            this.cmdButtonColor.UseVisualStyleBackColor = false;
+            this.cmdHighlightTextColor.BackColor = System.Drawing.SystemColors.Highlight;
+            this.cmdHighlightTextColor.ForeColor = System.Drawing.SystemColors.Control;
+            this.cmdHighlightTextColor.Location = new System.Drawing.Point(97, 100);
+            this.cmdHighlightTextColor.Name = "cmdHighlightTextColor";
+            this.cmdHighlightTextColor.Size = new System.Drawing.Size(124, 19);
+            this.cmdHighlightTextColor.TabIndex = 3;
+            this.cmdHighlightTextColor.Text = "変更...";
+            this.cmdHighlightTextColor.UseVisualStyleBackColor = false;
             // 
             // cmdTextColor
             // 
@@ -529,16 +484,61 @@ namespace HiMenu
             this.cmdTextColor.Text = "変更...";
             this.cmdTextColor.UseVisualStyleBackColor = false;
             // 
-            // cmdHighlightTextColor
+            // cmdButtonColor
             // 
-            this.cmdHighlightTextColor.BackColor = System.Drawing.SystemColors.Highlight;
-            this.cmdHighlightTextColor.ForeColor = System.Drawing.SystemColors.Control;
-            this.cmdHighlightTextColor.Location = new System.Drawing.Point(97, 100);
-            this.cmdHighlightTextColor.Name = "cmdHighlightTextColor";
-            this.cmdHighlightTextColor.Size = new System.Drawing.Size(124, 19);
-            this.cmdHighlightTextColor.TabIndex = 3;
-            this.cmdHighlightTextColor.Text = "変更...";
-            this.cmdHighlightTextColor.UseVisualStyleBackColor = false;
+            this.cmdButtonColor.BackColor = System.Drawing.SystemColors.Control;
+            this.cmdButtonColor.Location = new System.Drawing.Point(97, 48);
+            this.cmdButtonColor.Name = "cmdButtonColor";
+            this.cmdButtonColor.Size = new System.Drawing.Size(124, 19);
+            this.cmdButtonColor.TabIndex = 1;
+            this.cmdButtonColor.Text = "変更...";
+            this.cmdButtonColor.UseVisualStyleBackColor = false;
+            // 
+            // cmdBackColor
+            // 
+            this.cmdBackColor.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.cmdBackColor.Location = new System.Drawing.Point(97, 22);
+            this.cmdBackColor.Name = "cmdBackColor";
+            this.cmdBackColor.Size = new System.Drawing.Size(124, 19);
+            this.cmdBackColor.TabIndex = 0;
+            this.cmdBackColor.Text = "変更...";
+            this.cmdBackColor.UseVisualStyleBackColor = false;
+            // 
+            // lblHighlightTextColor
+            // 
+            this.lblHighlightTextColor.AutoSize = true;
+            this.lblHighlightTextColor.Location = new System.Drawing.Point(7, 103);
+            this.lblHighlightTextColor.Name = "lblHighlightTextColor";
+            this.lblHighlightTextColor.Size = new System.Drawing.Size(91, 12);
+            this.lblHighlightTextColor.TabIndex = 3;
+            this.lblHighlightTextColor.Text = "文字色(選択中)：";
+            // 
+            // lblTextColor
+            // 
+            this.lblTextColor.AutoSize = true;
+            this.lblTextColor.Location = new System.Drawing.Point(7, 77);
+            this.lblTextColor.Name = "lblTextColor";
+            this.lblTextColor.Size = new System.Drawing.Size(79, 12);
+            this.lblTextColor.TabIndex = 2;
+            this.lblTextColor.Text = "文字色(通常)：";
+            // 
+            // lblButtonColor
+            // 
+            this.lblButtonColor.AutoSize = true;
+            this.lblButtonColor.Location = new System.Drawing.Point(7, 51);
+            this.lblButtonColor.Name = "lblButtonColor";
+            this.lblButtonColor.Size = new System.Drawing.Size(50, 12);
+            this.lblButtonColor.TabIndex = 1;
+            this.lblButtonColor.Text = "ボタン色：";
+            // 
+            // lblBackColor
+            // 
+            this.lblBackColor.AutoSize = true;
+            this.lblBackColor.Location = new System.Drawing.Point(7, 25);
+            this.lblBackColor.Name = "lblBackColor";
+            this.lblBackColor.Size = new System.Drawing.Size(47, 12);
+            this.lblBackColor.TabIndex = 0;
+            this.lblBackColor.Text = "背景色：";
             // 
             // cmdOK
             // 

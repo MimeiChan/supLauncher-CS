@@ -34,8 +34,6 @@ namespace HiMenu
             this.lblTitle = new System.Windows.Forms.Label();
             this.lblComment = new System.Windows.Forms.Label();
             this.lblCommand = new System.Windows.Forms.Label();
-            this.lblAttribute = new System.Windows.Forms.Label();
-            this.lblAfter = new System.Windows.Forms.Label();
             this.chkNoUse = new System.Windows.Forms.CheckBox();
             this.optAttributeExec = new System.Windows.Forms.RadioButton();
             this.optAttributeNext = new System.Windows.Forms.RadioButton();
@@ -46,6 +44,10 @@ namespace HiMenu
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdBrowse = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtTitle
@@ -96,27 +98,9 @@ namespace HiMenu
             this.lblCommand.Text = "実行コマンド(&E)";
             this.lblCommand.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // lblAttribute
-            // 
-            this.lblAttribute.Location = new System.Drawing.Point(13, 97);
-            this.lblAttribute.Name = "lblAttribute";
-            this.lblAttribute.Size = new System.Drawing.Size(108, 19);
-            this.lblAttribute.TabIndex = 6;
-            this.lblAttribute.Text = "属性(&A)";
-            this.lblAttribute.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblAfter
-            // 
-            this.lblAfter.Location = new System.Drawing.Point(13, 168);
-            this.lblAfter.Name = "lblAfter";
-            this.lblAfter.Size = new System.Drawing.Size(108, 19);
-            this.lblAfter.TabIndex = 7;
-            this.lblAfter.Text = "実行後(&R)";
-            this.lblAfter.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // chkNoUse
             // 
-            this.chkNoUse.Location = new System.Drawing.Point(127, 260);
+            this.chkNoUse.Location = new System.Drawing.Point(12, 345);
             this.chkNoUse.Name = "chkNoUse";
             this.chkNoUse.Size = new System.Drawing.Size(131, 24);
             this.chkNoUse.TabIndex = 9;
@@ -126,9 +110,9 @@ namespace HiMenu
             // optAttributeExec
             // 
             this.optAttributeExec.Checked = true;
-            this.optAttributeExec.Location = new System.Drawing.Point(127, 97);
+            this.optAttributeExec.Location = new System.Drawing.Point(83, 14);
             this.optAttributeExec.Name = "optAttributeExec";
-            this.optAttributeExec.Size = new System.Drawing.Size(228, 20);
+            this.optAttributeExec.Size = new System.Drawing.Size(180, 20);
             this.optAttributeExec.TabIndex = 3;
             this.optAttributeExec.TabStop = true;
             this.optAttributeExec.Text = "アプリケーションの実行";
@@ -136,18 +120,18 @@ namespace HiMenu
             // 
             // optAttributeNext
             // 
-            this.optAttributeNext.Location = new System.Drawing.Point(127, 123);
+            this.optAttributeNext.Location = new System.Drawing.Point(83, 40);
             this.optAttributeNext.Name = "optAttributeNext";
-            this.optAttributeNext.Size = new System.Drawing.Size(228, 20);
+            this.optAttributeNext.Size = new System.Drawing.Size(180, 20);
             this.optAttributeNext.TabIndex = 4;
             this.optAttributeNext.Text = "次のメニューを開く";
             this.optAttributeNext.UseVisualStyleBackColor = true;
             // 
             // optAttributeBack
             // 
-            this.optAttributeBack.Location = new System.Drawing.Point(127, 149);
+            this.optAttributeBack.Location = new System.Drawing.Point(83, 66);
             this.optAttributeBack.Name = "optAttributeBack";
-            this.optAttributeBack.Size = new System.Drawing.Size(228, 20);
+            this.optAttributeBack.Size = new System.Drawing.Size(180, 20);
             this.optAttributeBack.TabIndex = 5;
             this.optAttributeBack.Text = "前のメニューに戻る";
             this.optAttributeBack.UseVisualStyleBackColor = true;
@@ -155,36 +139,36 @@ namespace HiMenu
             // optAfterContinue
             // 
             this.optAfterContinue.Checked = true;
-            this.optAfterContinue.Location = new System.Drawing.Point(127, 168);
+            this.optAfterContinue.Location = new System.Drawing.Point(83, 20);
             this.optAfterContinue.Name = "optAfterContinue";
             this.optAfterContinue.Size = new System.Drawing.Size(228, 19);
             this.optAfterContinue.TabIndex = 6;
             this.optAfterContinue.TabStop = true;
-            this.optAfterContinue.Text = "このソフトを継続する";
+            this.optAfterContinue.Text = "ランチャーを開いたままにする";
             this.optAfterContinue.UseVisualStyleBackColor = true;
             // 
             // optAfterEnd
             // 
-            this.optAfterEnd.Location = new System.Drawing.Point(127, 193);
+            this.optAfterEnd.Location = new System.Drawing.Point(83, 45);
             this.optAfterEnd.Name = "optAfterEnd";
             this.optAfterEnd.Size = new System.Drawing.Size(228, 19);
             this.optAfterEnd.TabIndex = 7;
-            this.optAfterEnd.Text = "このソフトを終了する";
+            this.optAfterEnd.Text = "ランチャーを終了する";
             this.optAfterEnd.UseVisualStyleBackColor = true;
             // 
             // optAfterMinimize
             // 
-            this.optAfterMinimize.Location = new System.Drawing.Point(127, 218);
+            this.optAfterMinimize.Location = new System.Drawing.Point(83, 70);
             this.optAfterMinimize.Name = "optAfterMinimize";
             this.optAfterMinimize.Size = new System.Drawing.Size(228, 19);
             this.optAfterMinimize.TabIndex = 8;
-            this.optAfterMinimize.Text = "このソフトを最小化する";
+            this.optAfterMinimize.Text = "ランチャーを最小化する";
             this.optAfterMinimize.UseVisualStyleBackColor = true;
             // 
             // cmdOK
             // 
             this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.cmdOK.Location = new System.Drawing.Point(322, 229);
+            this.cmdOK.Location = new System.Drawing.Point(326, 336);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
             this.cmdOK.TabIndex = 10;
@@ -194,7 +178,7 @@ namespace HiMenu
             // cmdCancel
             // 
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(403, 229);
+            this.cmdCancel.Location = new System.Drawing.Point(407, 336);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 11;
@@ -210,31 +194,49 @@ namespace HiMenu
             this.cmdBrowse.Text = "参照...";
             this.cmdBrowse.UseVisualStyleBackColor = true;
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.optAttributeExec);
+            this.groupBox1.Controls.Add(this.optAttributeNext);
+            this.groupBox1.Controls.Add(this.optAttributeBack);
+            this.groupBox1.Location = new System.Drawing.Point(43, 87);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(438, 107);
+            this.groupBox1.TabIndex = 13;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "ボタンの属性";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.optAfterContinue);
+            this.groupBox2.Controls.Add(this.optAfterEnd);
+            this.groupBox2.Controls.Add(this.optAfterMinimize);
+            this.groupBox2.Location = new System.Drawing.Point(43, 200);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(438, 106);
+            this.groupBox2.TabIndex = 14;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "アプリ起動後のランチャーの状態";
+            // 
             // FormButtonEdit
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(493, 318);
+            this.ClientSize = new System.Drawing.Size(514, 371);
             this.Controls.Add(this.cmdBrowse);
             this.Controls.Add(this.cmdCancel);
             this.Controls.Add(this.cmdOK);
-            this.Controls.Add(this.optAfterMinimize);
-            this.Controls.Add(this.optAfterEnd);
-            this.Controls.Add(this.optAfterContinue);
-            this.Controls.Add(this.optAttributeBack);
-            this.Controls.Add(this.optAttributeNext);
-            this.Controls.Add(this.optAttributeExec);
             this.Controls.Add(this.chkNoUse);
-            this.Controls.Add(this.lblAfter);
-            this.Controls.Add(this.lblAttribute);
             this.Controls.Add(this.lblCommand);
             this.Controls.Add(this.lblComment);
             this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.txtCommand);
             this.Controls.Add(this.txtComment);
             this.Controls.Add(this.txtTitle);
+            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.groupBox2);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -242,6 +244,8 @@ namespace HiMenu
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "ボタン詳細設定";
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -255,8 +259,6 @@ namespace HiMenu
         private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.Label lblComment;
         private System.Windows.Forms.Label lblCommand;
-        private System.Windows.Forms.Label lblAttribute;
-        private System.Windows.Forms.Label lblAfter;
         private System.Windows.Forms.CheckBox chkNoUse;
         private System.Windows.Forms.RadioButton optAttributeExec;
         private System.Windows.Forms.RadioButton optAttributeNext;
@@ -267,5 +269,7 @@ namespace HiMenu
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdBrowse;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox2;
     }
 }
