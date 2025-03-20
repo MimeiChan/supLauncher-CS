@@ -74,6 +74,9 @@ namespace HiMenu
 
         private void FormHiMenu_Load(object sender, EventArgs e)
         {
+            // XML関連メニュー項目の追加
+            AddXmlMenuItems();
+
             // ちらつき防止
             this.SetStyle(ControlStyles.DoubleBuffer, true);
             this.SetStyle(ControlStyles.UserPaint, true);
@@ -177,6 +180,47 @@ namespace HiMenu
             else if (MenuItem == mnuFileMemberExit || MenuItem == ToolStripMenuItemExit)
             {
                 this.Close();
+            }
+            else if (MenuItem == mnuFileMemberNewXml)
+            {
+                using (SaveFileDialog dlg = new SaveFileDialog())
+                {
+                    dlg.Filter = "XML定義ファイル (*.xml)|*.xml|すべてのファイル (*.*)|*.*";
+                    dlg.Title = "新規XMLファイルの保存先";
+                    dlg.DefaultExt = "xml";
+                    
+                    if (dlg.ShowDialog() == DialogResult.OK)
+                    {
+                        if (m_CMenuPage.MenuFileWrite() == DialogResult.Cancel)
+                        {
+                            return;
+                        }
+                        
+                        m_CMenuPage.MenuFileName = dlg.FileName;
+                        m_CMenuPage.Initalize();
+                        SetFormObject();
+                        GoButton(0);
+                    }
+                }
+            }
+            else if (MenuItem == mnuFileMemberOpenXml)
+            {
+                using (OpenFileDialog dlg = new OpenFileDialog())
+                {
+                    dlg.Filter = "XML定義ファイル (*.xml)|*.xml|すべてのファイル (*.*)|*.*";
+                    dlg.Title = "XMLファイルを開く";
+                    
+                    if (dlg.ShowDialog() == DialogResult.OK)
+                    {
+                        if (m_CMenuPage.MenuFileWrite() == DialogResult.Cancel)
+                        {
+                            return;
+                        }
+                        
+                        CreateMenuScreenMain(dlg.FileName);
+                        GoButton(0);
+                    }
+                }
             }
         }
 
@@ -1196,6 +1240,39 @@ namespace HiMenu
             objControl.Focus();
         }
 
+        #endregion
+
+        #region XML関連メニュー
+        
+        /// <summary>
+        /// メニューにXML関連の項目を追加する
+        /// </summary>
+        private void AddXmlMenuItems()
+        {
+            // XML形式で新規作成
+            ToolStripMenuItem mnuFileMemberNewXml = new ToolStripMenuItem("新規作成(&N)...");
+            mnuFileMemberNewXml.ShortcutKeys = Keys.Control | Keys.N;
+            
+            // XML形式を開く
+            ToolStripMenuItem mnuFileMemberOpenXml = new ToolStripMenuItem("開く(&O)...");
+            mnuFileMemberOpenXml.ShortcutKeys = Keys.Control | Keys.O;
+            
+            // メニューに追加
+            int insertIndex = mnuFile.DropDownItems.IndexOf(mnuFileMemberOption);
+            if (insertIndex >= 0)
+            {
+                mnuFile.DropDownItems.Insert(insertIndex, mnuFileMemberOpenXml);
+                mnuFile.DropDownItems.Insert(insertIndex, mnuFileMemberNewXml);
+                mnuFile.DropDownItems.Insert(insertIndex + 2, new ToolStripSeparator());
+            }
+            else
+            {
+                mnuFile.DropDownItems.Insert(0, new ToolStripSeparator());
+                mnuFile.DropDownItems.Insert(0, mnuFileMemberOpenXml);
+                mnuFile.DropDownItems.Insert(0, mnuFileMemberNewXml);
+            }
+        }
+        
         #endregion
 
         public FormHiMenu()
