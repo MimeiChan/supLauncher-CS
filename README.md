@@ -17,6 +17,7 @@ Windows用メニューランチャーアプリケーション「supLauncher」�
 - カスタマイズ可能なボタンメニュー
 - 複数のアプリケーションの実行
 - メニュー間の連携と階層化
+- XML形式でのメニュー定義ファイル管理
 - カスタマイズ可能な外観設定
   - フォント・色・サイズなどの変更
   - 背景画像設定
@@ -35,12 +36,47 @@ Windows用メニューランチャーアプリケーション「supLauncher」�
 - `FormConfiguration.cs` - 環境設定画面
 - `FormPassword.cs` - パスワード設定・確認画面
 - `Extensions.cs` - VB.NET関数をC#で再現する拡張メソッド
+- `SampleMenu.xml` - サンプルメニュー定義ファイル
 
 ## 使用方法
 
 1. プロジェクトをビルドしてHiMenu.exeを実行
 2. 初回起動時は編集モードになっているので、ボタンをクリックして編集
 3. 「ファイル」→「編集モード」→「実行モード」で実際に使用可能
+
+### XML形式メニューファイルの使用
+
+このバージョンからXML形式でのメニュー定義がサポートされています：
+
+1. 「ファイル」→「新規作成」から新しいXMLメニューファイルを作成
+2. 「ファイル」→「開く」から既存のXMLメニューファイルを開く
+3. `SampleMenu.xml`にサンプルメニュー定義が含まれています
+
+## XMLメニュー定義の構造
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<HiMenu version="1.0.0.0">
+  <EnvironmentTitle>
+    <Title>メニュータイトル</Title>
+    <Items>
+      <Item index="1">
+        <Title>ボタンのタイトル</Title>
+        <Comment>ステータスバーに表示される説明</Comment>
+        <Command>実行するコマンド</Command>
+        <Flag>フラグ設定</Flag>
+      </Item>
+      <!-- 他のアイテム -->
+    </Items>
+  </EnvironmentTitle>
+  <ExecuteEnvironment>
+    <!-- 表示設定など -->
+  </ExecuteEnvironment>
+  <Current>
+    <!-- 位置情報 -->
+  </Current>
+</HiMenu>
+```
 
 ## トラブルシューティング
 
@@ -64,7 +100,7 @@ Windows用メニューランチャーアプリケーション「supLauncher」�
 
 ## 注意事項
 
-- VB.NET版との互換性を保つため、INIファイル形式のメニュー定義ファイル（*.MNU）を使用しています。
+- このバージョンではXML形式のメニュー定義ファイル（*.xml）を使用しています。
 - このプロジェクトは.NET Framework 4.8をターゲットにしていますが、必要に応じて.NET 6以上に移行することも検討できます。
 - Git経由でプロジェクトを共有する際は、.gitignoreが適切に設定されていることを確認してください。
 
