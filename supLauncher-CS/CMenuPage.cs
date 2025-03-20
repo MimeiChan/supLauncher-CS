@@ -3,18 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace HiMenu
 {
     internal class CMenuPage
     {
-        [DllImport("KERNEL32.DLL", EntryPoint = "WritePrivateProfileString", CharSet = CharSet.Auto)]
-        private static extern int API_WritePrivateProfileString(string lpApplicationName, string lpKeyName, string lpString, string lpFileName);
-
         private static CMenuPage mObj = new CMenuPage();
 
         private FormHiMenu m_MenuForm;
@@ -142,7 +139,6 @@ namespace HiMenu
         private string m_LockPassword; // 現在のメニュー内容の変更ﾊﾟｽﾜｰﾄﾞ
 
         private bool m_Changed;
-        private bool m_Saved;
 
         public enum MenuDispPosition
         {
@@ -180,14 +176,6 @@ namespace HiMenu
 
         private int m_CancelButton; // 現在のメニューのキャンセルボタンのインデックス
         private int m_CurrentButton; // 現在のメニューのアクティブボタンのインデックス
-
-        private enum MenuFileSection
-        {
-            NotSetGroup,
-            EnvironmentTitle,
-            ExecuteEnvironment,
-            Current
-        }
 
         /// <summary>
         /// コンストラクタ（privateでシングルトンパターンを実現）
@@ -263,139 +251,157 @@ namespace HiMenu
 
             if (!File.Exists(m_MenuFileName)) return;
 
-            Encoding encoding = Encoding.GetEncoding("Shift-JIS");
-            MenuFileSection Section = MenuFileSection.NotSetGroup;
-            StringComparison StringComparison = StringComparison.CurrentCultureIgnoreCase;
-
-            using (StreamReader txReader = new StreamReader(m_MenuFileName, encoding))
+            try
             {
-                while (!txReader.EndOfStream)
+                XDocument doc = XDocument.Load(m_MenuFileName);
+                XElement root = doc.Root;
+
+                // EnvironmentTitleセクションの読み込み
+                XElement envTitle = root.Element("EnvironmentTitle");
+                if (envTitle != null)
                 {
-                    string strReadLine = txReader.ReadLine();
-
-                    if (!strReadLine.StartsWith(";"))
+                    // メニュータイトル
+                    XElement title = envTitle.Element("Title");
+                    if (title != null)
                     {
-                        // INIファイルのセクションを判定
-                        if (strReadLine.IndexOf("[EnvironmentTitle]", StringComparison) == 0) Section = MenuFileSection.EnvironmentTitle;
-                        if (strReadLine.IndexOf("[ExecuteEnvironment]", StringComparison) == 0) Section = MenuFileSection.ExecuteEnvironment;
-                        if (strReadLine.IndexOf("[Current]", StringComparison) == 0) Section = MenuFileSection.Current;
+                        m_MenuTitle = title.Value;
+                    }
 
-                        // セクションのメンバを判定
-                        int intIndex = strReadLine.IndexOf("=", StringComparison) + 1;
-
-                        if (intIndex > 0)
+                    // メニュー項目
+                    XElement items = envTitle.Element("Items");
+                    if (items != null)
+                    {
+                        foreach (XElement item in items.Elements("Item"))
                         {
-                            string strValue = strReadLine.Substring(intIndex);
-
-                            switch (Section)
+                            int index;
+                            if (item.Attribute("index") != null && int.TryParse(item.Attribute("index").Value, out index) && index > 0)
                             {
-                                case MenuFileSection.EnvironmentTitle:
-                                    //--------------------------------------------------
-                                    // [EnvironmentTitle]セクション
-                                    //--------------------------------------------------
-                                    string keyName = strReadLine.Substring(0, intIndex - 1);
-                                    if (keyName.StartsWith("Title", StringComparison))
-                                    {
-                                        string idxStr = keyName.Substring(5, 2);
-                                        if (int.TryParse(idxStr, out int intValIndex))
-                                        {
-                                            if (intValIndex == 0)
-                                            {
-                                                m_MenuTitle = strValue;
-                                            }
-                                            else
-                                            {
-                                                MenuItemsCountSet(intValIndex);
+                                index--; // XMLでは1から始まるインデックスを使用
+                                MenuItemsCountSet(index + 1); // 必要に応じてアイテム数を調整
 
-                                                intValIndex = intValIndex - 1;
+                                XElement itemTitle = item.Element("Title");
+                                if (itemTitle != null)
+                                {
+                                    m_MenuFileItem[index].Title = itemTitle.Value;
+                                }
 
-                                                if (keyName.StartsWith("Title", StringComparison))
-                                                {
-                                                    m_MenuFileItem[intValIndex].Title = strValue;
-                                                }
-                                            }
-                                        }
-                                    }
-                                    else if (keyName.StartsWith("Comment", StringComparison))
-                                    {
-                                        string idxStr = keyName.Substring(7, 2);
-                                        if (int.TryParse(idxStr, out int intValIndex) && intValIndex > 0)
-                                        {
-                                            intValIndex = intValIndex - 1;
-                                            m_MenuFileItem[intValIndex].Comment = strValue;
-                                        }
-                                    }
-                                    else if (keyName.StartsWith("Command", StringComparison))
-                                    {
-                                        string idxStr = keyName.Substring(7, 2);
-                                        if (int.TryParse(idxStr, out int intValIndex) && intValIndex > 0)
-                                        {
-                                            intValIndex = intValIndex - 1;
-                                            m_MenuFileItem[intValIndex].Command = strValue;
-                                        }
-                                    }
-                                    else if (keyName.StartsWith("Flag", StringComparison))
-                                    {
-                                        string idxStr = keyName.Substring(4, 2);
-                                        if (int.TryParse(idxStr, out int intValIndex) && intValIndex > 0)
-                                        {
-                                            intValIndex = intValIndex - 1;
-                                            m_MenuFileItem[intValIndex].Flag = strValue;
-                                        }
-                                    }
-                                    break;
+                                XElement itemComment = item.Element("Comment");
+                                if (itemComment != null)
+                                {
+                                    m_MenuFileItem[index].Comment = itemComment.Value;
+                                }
 
-                                case MenuFileSection.ExecuteEnvironment:
-                                    //--------------------------------------------------
-                                    // [ExecuteEnvironment]セクション
-                                    //--------------------------------------------------
-                                    if (strReadLine.IndexOf("Rows", StringComparison) == 0) m_MenuRows = Convert.ToInt32(strValue);
-                                    else if (strReadLine.IndexOf("Cols", StringComparison) == 0) m_MenuCols = Convert.ToInt32(strValue);
-                                    else if (strReadLine.IndexOf("Width", StringComparison) == 0) m_MenuWidth = Convert.ToInt32(strValue);
-                                    else if (strReadLine.IndexOf("Height", StringComparison) == 0) m_MenuHeight = Convert.ToInt32(strValue);
-                                    else if (strReadLine.IndexOf("FontName", StringComparison) == 0) m_FontName = strValue;
-                                    else if (strReadLine.IndexOf("FontSize", StringComparison) == 0) m_FontSize = float.Parse(strValue);
-                                    else if (strReadLine.IndexOf("FontBold", StringComparison) == 0) m_FontBold = Convert.ToBoolean(strValue.Trim());
-                                    else if (strReadLine.IndexOf("FontItalic", StringComparison) == 0) m_FontItalic = Convert.ToBoolean(strValue.Trim());
-                                    else if (strReadLine.IndexOf("FontUnderline", StringComparison) == 0) m_FontUnderline = Convert.ToBoolean(strValue.Trim());
-                                    else if (strReadLine.IndexOf("LockPassword", StringComparison) == 0) m_LockPassword = strValue;
-                                    else if (strReadLine.IndexOf("DispPosition", StringComparison) == 0) m_DispPosition = (MenuDispPosition)(Convert.ToInt32(strValue) - 1);
-                                    else if (strReadLine.IndexOf("BGFile", StringComparison) == 0) m_BGFile = strValue;
-                                    else if (strReadLine.IndexOf("BGTile", StringComparison) == 0) m_BGTile = Convert.ToBoolean(strValue.Trim());
-                                    else if (strReadLine.IndexOf("MenuVisible", StringComparison) == 0) m_MenuVisible = Convert.ToBoolean(strValue.Trim());
-                                    else if (strReadLine.IndexOf("StatusBarVisible", StringComparison) == 0) m_StatusBarVisible = Convert.ToBoolean(strValue.Trim());
-                                    else if (strReadLine.IndexOf("BackColor", StringComparison) == 0) m_BackColor = Convert.ToInt32(strValue);
-                                    else if (strReadLine.IndexOf("ButtonColor", StringComparison) == 0) m_ButtonColor = Convert.ToInt32(strValue);
-                                    else if (strReadLine.IndexOf("TextColor", StringComparison) == 0) m_TextColor = Convert.ToInt32(strValue);
-                                    else if (strReadLine.IndexOf("HighLigitTextColor", StringComparison) == 0) m_HighLightTextColor = Convert.ToInt32(strValue);
-                                    else if (strReadLine.IndexOf("CancelButton", StringComparison) == 0) m_CancelButton = Convert.ToInt32(strValue);
-                                    break;
+                                XElement itemCommand = item.Element("Command");
+                                if (itemCommand != null)
+                                {
+                                    m_MenuFileItem[index].Command = itemCommand.Value;
+                                }
 
-                                case MenuFileSection.Current:
-                                    //--------------------------------------------------
-                                    // [Current]セクション
-                                    //--------------------------------------------------
-                                    if (strReadLine.IndexOf("CurrentX", StringComparison) == 0) m_CurrentX = Convert.ToInt32(strValue);
-                                    else if (strReadLine.IndexOf("CurrentY", StringComparison) == 0) m_CurrentY = Convert.ToInt32(strValue);
-                                    break;
+                                XElement itemFlag = item.Element("Flag");
+                                if (itemFlag != null)
+                                {
+                                    m_MenuFileItem[index].Flag = itemFlag.Value;
+                                }
                             }
                         }
                     }
                 }
+
+                // ExecuteEnvironmentセクションの読み込み
+                XElement execEnv = root.Element("ExecuteEnvironment");
+                if (execEnv != null)
+                {
+                    XElement rows = execEnv.Element("Rows");
+                    if (rows != null) m_MenuRows = Convert.ToInt32(rows.Value);
+
+                    XElement cols = execEnv.Element("Cols");
+                    if (cols != null) m_MenuCols = Convert.ToInt32(cols.Value);
+
+                    XElement width = execEnv.Element("Width");
+                    if (width != null) m_MenuWidth = Convert.ToInt32(width.Value);
+
+                    XElement height = execEnv.Element("Height");
+                    if (height != null) m_MenuHeight = Convert.ToInt32(height.Value);
+
+                    XElement fontName = execEnv.Element("FontName");
+                    if (fontName != null) m_FontName = fontName.Value;
+
+                    XElement fontSize = execEnv.Element("FontSize");
+                    if (fontSize != null) m_FontSize = float.Parse(fontSize.Value);
+
+                    XElement fontBold = execEnv.Element("FontBold");
+                    if (fontBold != null) m_FontBold = Convert.ToBoolean(fontBold.Value);
+
+                    XElement fontItalic = execEnv.Element("FontItalic");
+                    if (fontItalic != null) m_FontItalic = Convert.ToBoolean(fontItalic.Value);
+
+                    XElement fontUnderline = execEnv.Element("FontUnderline");
+                    if (fontUnderline != null) m_FontUnderline = Convert.ToBoolean(fontUnderline.Value);
+
+                    XElement dispPosition = execEnv.Element("DispPosition");
+                    if (dispPosition != null) m_DispPosition = (MenuDispPosition)(Convert.ToInt32(dispPosition.Value) - 1);
+
+                    XElement bgFile = execEnv.Element("BGFile");
+                    if (bgFile != null) m_BGFile = bgFile.Value;
+
+                    XElement bgTile = execEnv.Element("BGTile");
+                    if (bgTile != null) m_BGTile = Convert.ToBoolean(bgTile.Value);
+
+                    XElement menuVisible = execEnv.Element("MenuVisible");
+                    if (menuVisible != null) m_MenuVisible = Convert.ToBoolean(menuVisible.Value);
+
+                    XElement statusBarVisible = execEnv.Element("StatusBarVisible");
+                    if (statusBarVisible != null) m_StatusBarVisible = Convert.ToBoolean(statusBarVisible.Value);
+
+                    XElement backColor = execEnv.Element("BackColor");
+                    if (backColor != null) m_BackColor = Convert.ToInt32(backColor.Value);
+
+                    XElement buttonColor = execEnv.Element("ButtonColor");
+                    if (buttonColor != null) m_ButtonColor = Convert.ToInt32(buttonColor.Value);
+
+                    XElement textColor = execEnv.Element("TextColor");
+                    if (textColor != null) m_TextColor = Convert.ToInt32(textColor.Value);
+
+                    XElement highLightTextColor = execEnv.Element("HighLightTextColor");
+                    if (highLightTextColor != null) m_HighLightTextColor = Convert.ToInt32(highLightTextColor.Value);
+
+                    XElement cancelButton = execEnv.Element("CancelButton");
+                    if (cancelButton != null) m_CancelButton = Convert.ToInt32(cancelButton.Value);
+
+                    XElement lockPassword = execEnv.Element("LockPassword");
+                    if (lockPassword != null) m_LockPassword = lockPassword.Value;
+                }
+
+                // Currentセクションの読み込み
+                XElement current = root.Element("Current");
+                if (current != null)
+                {
+                    XElement currentX = current.Element("CurrentX");
+                    if (currentX != null) m_CurrentX = Convert.ToInt32(currentX.Value);
+
+                    XElement currentY = current.Element("CurrentY");
+                    if (currentY != null) m_CurrentY = Convert.ToInt32(currentY.Value);
+                }
+
+                // メニュー項目数の調整
+                MenuItemsCountSet();
+
+                // ルートメニュー情報を記憶
+                if (CMenuChain.GetInstance().IsRootMenu())
+                {
+                    m_RootMenuFileName = m_MenuFileName;
+                    m_RootMenuDispPosition = m_DispPosition;
+                }
+
+                m_LockOn = true;
+                m_Changed = false;
             }
-
-            MenuItemsCountSet();
-
-            // ルートメニュー情報を記憶
-            if (CMenuChain.GetInstance().IsRootMenu())
+            catch (Exception ex)
             {
-                m_RootMenuFileName = m_MenuFileName;
-                m_RootMenuDispPosition = m_DispPosition;
+                MessageBox.Show("XMLファイルの読み込みに失敗しました: " + ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // 読み込みに失敗した場合は初期化
+                Initalize();
             }
-
-            m_LockOn = true;
-
-            m_Changed = false;
         }
 
         /// <summary>
@@ -443,65 +449,104 @@ namespace HiMenu
         /// <returns>書き込みが成功した場合はtrue</returns>
         internal bool MenuFileWriteBody()
         {
-            Encoding encoding = Encoding.GetEncoding("Shift-JIS");
-
-            using (StreamWriter txWriter = new StreamWriter(m_MenuFileName, false, encoding))
+            try
             {
-                txWriter.WriteLine("; Launcher Version" + Application.ProductVersion.Split('.')[0] + "." + Application.ProductVersion.Split('.')[1] + Application.ProductVersion.Split('.')[2] + " 用定義ファイル");
-                txWriter.WriteLine("[EnvironmentTitle]");
-                txWriter.WriteLine("Title00=" + m_MenuTitle);
+                // バージョン情報を含めたHiMenu要素の作成
+                XDocument doc = new XDocument(
+                    new XDeclaration("1.0", "utf-8", null),
+                    new XElement("HiMenu",
+                        new XAttribute("version", Application.ProductVersion)
+                    )
+                );
+
+                // EnvironmentTitleセクションの作成
+                XElement envTitle = new XElement("EnvironmentTitle",
+                    new XElement("Title", m_MenuTitle),
+                    new XElement("Items")
+                );
+                doc.Root.Add(envTitle);
+
+                // メニュー項目の追加
+                XElement items = envTitle.Element("Items");
                 for (int intIndex = 0; intIndex < (m_MenuRows * m_MenuCols); intIndex++)
                 {
                     CMenuFileItemInf item = m_MenuFileItem[intIndex];
-                    string strNo = (intIndex + 1).ToString("00");
-                    if (item.Title.Length != 0)
+                    if (item.Title.Length != 0 || item.Comment.Length != 0 || item.Command.Length != 0 || item.Flag != "---")
                     {
-                        txWriter.WriteLine("Title" + strNo + "=" + item.Title);
-                    }
-                    if (item.Comment.Length != 0)
-                    {
-                        txWriter.WriteLine("Comment" + strNo + "=" + item.Comment);
-                    }
-                    if (item.Command.Length != 0)
-                    {
-                        txWriter.WriteLine("Command" + strNo + "=" + item.Command);
-                    }
-                    if (item.Flag != "---")
-                    {
-                        txWriter.WriteLine("Flag" + strNo + "=" + item.Flag);
+                        XElement menuItem = new XElement("Item",
+                            new XAttribute("index", (intIndex + 1).ToString()),
+                            new XElement("Title", item.Title)
+                        );
+
+                        if (item.Comment.Length != 0)
+                        {
+                            menuItem.Add(new XElement("Comment", item.Comment));
+                        }
+
+                        if (item.Command.Length != 0)
+                        {
+                            menuItem.Add(new XElement("Command", item.Command));
+                        }
+
+                        if (item.Flag != "---")
+                        {
+                            menuItem.Add(new XElement("Flag", item.Flag));
+                        }
+
+                        items.Add(menuItem);
                     }
                 }
-                txWriter.WriteLine("[ExecuteEnvironment]");
-                txWriter.WriteLine("Rows=" + m_MenuRows.ToString());
-                txWriter.WriteLine("Cols=" + m_MenuCols.ToString());
-                txWriter.WriteLine("Width=" + m_MenuWidth.ToString());
-                txWriter.WriteLine("Height=" + m_MenuHeight.ToString());
-                txWriter.WriteLine("FontName=" + m_FontName);
-                txWriter.WriteLine("FontSize=" + m_FontSize.ToString());
-                txWriter.WriteLine("FontBold=" + m_FontBold.ToString());
-                txWriter.WriteLine("FontItalic=" + m_FontItalic.ToString());
-                txWriter.WriteLine("FontUnderline=" + m_FontUnderline.ToString());
-                txWriter.WriteLine("DispPosition=" + (((int)m_DispPosition) + 1).ToString());
-                txWriter.WriteLine("BGFile=" + m_BGFile);
-                txWriter.WriteLine("BGTile=" + m_BGTile.ToString());
-                txWriter.WriteLine("MenuVisible=" + m_MenuVisible.ToString());
-                txWriter.WriteLine("StatusBarVisible=" + m_StatusBarVisible.ToString());
-                txWriter.WriteLine("BackColor=" + m_BackColor.ToString());
-                txWriter.WriteLine("ButtonColor=" + m_ButtonColor.ToString());
-                txWriter.WriteLine("TextColor=" + m_TextColor.ToString());
-                txWriter.WriteLine("HighLigitTextColor=" + m_HighLightTextColor.ToString());
+
+                // ExecuteEnvironmentセクションの作成
+                XElement execEnv = new XElement("ExecuteEnvironment",
+                    new XElement("Rows", m_MenuRows),
+                    new XElement("Cols", m_MenuCols),
+                    new XElement("Width", m_MenuWidth),
+                    new XElement("Height", m_MenuHeight),
+                    new XElement("FontName", m_FontName),
+                    new XElement("FontSize", m_FontSize),
+                    new XElement("FontBold", m_FontBold),
+                    new XElement("FontItalic", m_FontItalic),
+                    new XElement("FontUnderline", m_FontUnderline),
+                    new XElement("DispPosition", ((int)m_DispPosition) + 1),
+                    new XElement("BGFile", m_BGFile),
+                    new XElement("BGTile", m_BGTile),
+                    new XElement("MenuVisible", m_MenuVisible),
+                    new XElement("StatusBarVisible", m_StatusBarVisible),
+                    new XElement("BackColor", m_BackColor),
+                    new XElement("ButtonColor", m_ButtonColor),
+                    new XElement("TextColor", m_TextColor),
+                    new XElement("HighLightTextColor", m_HighLightTextColor)
+                );
+
                 if (m_CancelButton >= 0 && m_CancelButton < m_MenuRows * m_MenuCols)
                 {
-                    txWriter.WriteLine("CancelButton=" + m_CancelButton.ToString());
+                    execEnv.Add(new XElement("CancelButton", m_CancelButton));
                 }
 
                 if (m_LockOn)
                 {
-                    txWriter.WriteLine("LockPassword=" + m_LockPassword);
+                    execEnv.Add(new XElement("LockPassword", m_LockPassword));
                 }
-            }
 
-            return true;
+                doc.Root.Add(execEnv);
+
+                // Currentセクションの作成
+                XElement current = new XElement("Current",
+                    new XElement("CurrentX", m_CurrentX),
+                    new XElement("CurrentY", m_CurrentY)
+                );
+                doc.Root.Add(current);
+
+                // XMLファイルへの保存
+                doc.Save(m_MenuFileName);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("XMLファイルの書き込みに失敗しました: " + ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
         }
 
         /// <summary>
@@ -511,15 +556,11 @@ namespace HiMenu
         {
             if (m_RootMenuDispPosition == MenuDispPosition.ScreenCenter) return;
 
-            int lngRetVal;
-            string strLeftPnt;
-            string strTopPnt;
             string strFileName = "";
-
             m_MenuForm.WindowState = FormWindowState.Normal;
 
-            strLeftPnt = m_MenuForm.Left.ToString();
-            strTopPnt = m_MenuForm.Top.ToString();
+            string strLeftPnt = m_MenuForm.Left.ToString();
+            string strTopPnt = m_MenuForm.Top.ToString();
 
             switch (m_RootMenuDispPosition)
             {
@@ -533,8 +574,46 @@ namespace HiMenu
                     break;
             }
 
-            lngRetVal = API_WritePrivateProfileString("Current", "CurrentX", strLeftPnt, strFileName);
-            lngRetVal = API_WritePrivateProfileString("Current", "CurrentY", strTopPnt, strFileName);
+            try
+            {
+                if (!string.IsNullOrEmpty(strFileName) && File.Exists(strFileName))
+                {
+                    XDocument doc = XDocument.Load(strFileName);
+
+                    // Currentセクションの取得または作成
+                    XElement current = doc.Root.Element("Current");
+                    if (current == null)
+                    {
+                        current = new XElement("Current");
+                        doc.Root.Add(current);
+                    }
+
+                    // CurrentX要素の取得または作成
+                    XElement currentX = current.Element("CurrentX");
+                    if (currentX == null)
+                    {
+                        currentX = new XElement("CurrentX");
+                        current.Add(currentX);
+                    }
+                    currentX.Value = strLeftPnt;
+
+                    // CurrentY要素の取得または作成
+                    XElement currentY = current.Element("CurrentY");
+                    if (currentY == null)
+                    {
+                        currentY = new XElement("CurrentY");
+                        current.Add(currentY);
+                    }
+                    currentY.Value = strTopPnt;
+
+                    // ファイルに保存
+                    doc.Save(strFileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.Print("XML位置情報の書き込みに失敗しました: " + ex.Message);
+            }
 
             Debug.Print(strFileName + " " + strLeftPnt + " " + strTopPnt);
         }
@@ -1047,9 +1126,8 @@ namespace HiMenu
                     m_MenuFileName = Path.GetDirectoryName(Application.ExecutablePath);
                     if (!m_MenuFileName.EndsWith("\\")) m_MenuFileName = m_MenuFileName + "\\";
                     
-                    // デバッグ時の特殊パスを削除し、安全なパス設定に変更
-                    // ビルドしたアプリケーションと同じディレクトリにMenuFile.MNUを作成
-                    m_MenuFileName += "MenuFile.MNU";
+                    // デフォルトファイル名をXML形式に変更
+                    m_MenuFileName += "MenuFile.xml";
                     
                     // 必要に応じてディレクトリを作成
                     string directory = Path.GetDirectoryName(m_MenuFileName);
