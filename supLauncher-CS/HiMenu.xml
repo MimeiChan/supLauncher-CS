@@ -1,0 +1,405 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>HiMenu</name>
+    </assembly>
+    <members>
+        <member name="T:HiMenu.Extensions">
+            <summary>
+            VB.NETの一部の関数をC#で再現するための拡張メソッド
+            </summary>
+        </member>
+        <member name="M:HiMenu.Extensions.Left(System.String,System.Int32)">
+            <summary>
+            文字列の左端から指定された文字数分の文字列を返します。
+            </summary>
+        </member>
+        <member name="M:HiMenu.Extensions.Right(System.String,System.Int32)">
+            <summary>
+            文字列の右端から指定された文字数分の文字列を返します。
+            </summary>
+        </member>
+        <member name="M:HiMenu.Extensions.Mid(System.String,System.Int32,System.Int32)">
+            <summary>
+            文字列の指定された位置から指定された文字数分の文字列を返します。
+            </summary>
+        </member>
+        <member name="M:HiMenu.Extensions.Len(System.String)">
+            <summary>
+            指定した文字列の長さを返します。
+            </summary>
+        </member>
+        <member name="M:HiMenu.Extensions.Val(System.String)">
+            <summary>
+            VB.NETのVal関数と同様に、文字列から数値を抽出します。
+            </summary>
+        </member>
+        <member name="M:HiMenu.Extensions.IIf``1(System.Boolean,``0,``0)">
+            <summary>
+            指定した値によって、値1または値2を返します（VB.NETのIIf関数相当）
+            </summary>
+        </member>
+        <member name="M:HiMenu.Extensions.StartsWith(System.String,System.String,System.StringComparison)">
+            <summary>
+            文字列が指定した文字で始まるかどうかを大文字小文字を区別せずに判定します。
+            </summary>
+        </member>
+        <member name="M:HiMenu.CFunctions.GetDriveFolderFile(System.String,HiMenu.CFunctions.GetDriveFolderFileMode)">
+            <summary>
+            ドライブ名＋フォルダ名＋ファイル名を取り出し
+            </summary>
+        </member>
+        <member name="M:HiMenu.CFunctions.GetPathAndFile(System.String,HiMenu.CFunctions.GetPathAndFileMode)">
+            <summary>
+            パス名・ファイル名を取り出し
+            </summary>
+        </member>
+        <member name="M:HiMenu.CFunctions.QuateFullPath(System.String)">
+            <summary>
+            パス名に空白が含まれる場合にダブルコーテーションで囲む
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormButtonEdit.#ctor">
+            <summary>
+            コンストラクタ
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormButtonEdit.FormButtonEdit_Load(System.Object,System.EventArgs)">
+            <summary>
+            フォームロード時のイベント
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormButtonEdit.cmdOK_Click(System.Object,System.EventArgs)">
+            <summary>
+            OKボタンクリック時のイベント
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormButtonEdit.cmdBrowse_Click(System.Object,System.EventArgs)">
+            <summary>
+            参照ボタンクリック時のイベント
+            </summary>
+        </member>
+        <member name="F:HiMenu.FormButtonEdit.components">
+            <summary>
+            必要なデザイナー変数です。
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormButtonEdit.Dispose(System.Boolean)">
+            <summary>
+            使用中のリソースをすべてクリーンアップします。
+            </summary>
+            <param name="disposing">マネージド リソースを破棄する場合は true を指定し、その他の場合は false を指定します。</param>
+        </member>
+        <member name="M:HiMenu.FormButtonEdit.InitializeComponent">
+            <summary>
+            デザイナー サポートに必要なメソッドです。このメソッドの内容を
+            コード エディターで変更しないでください。
+            </summary>
+        </member>
+        <member name="F:HiMenu.FormAbout.components">
+            <summary>
+            必要なデザイナー変数です。
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormAbout.Dispose(System.Boolean)">
+            <summary>
+            使用中のリソースをすべてクリーンアップします。
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormAbout.InitializeComponent">
+            <summary>
+            デザイナー サポートに必要なメソッドです。このメソッドの内容を
+            コード エディターで変更しないでください。
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormPassword.#ctor">
+            <summary>
+            コンストラクタ
+            </summary>
+        </member>
+        <member name="P:HiMenu.FormPassword.SetMode">
+            <summary>
+            動作モード設定プロパティ
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormPassword.FormPassword_Load(System.Object,System.EventArgs)">
+            <summary>
+            フォームロード時のイベント
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormPassword.cmdOK_Click(System.Object,System.EventArgs)">
+            <summary>
+            OKボタンクリック時のイベント
+            </summary>
+        </member>
+        <member name="F:HiMenu.FormPassword.components">
+            <summary>
+            必要なデザイナー変数です。
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormPassword.Dispose(System.Boolean)">
+            <summary>
+            使用中のリソースをすべてクリーンアップします。
+            </summary>
+            <param name="disposing">マネージド リソースを破棄する場合は true を指定し、その他の場合は false を指定します。</param>
+        </member>
+        <member name="M:HiMenu.FormPassword.InitializeComponent">
+            <summary>
+            デザイナー サポートに必要なメソッドです。このメソッドの内容を
+            コード エディターで変更しないでください。
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormConfiguration.#ctor">
+            <summary>
+            コンストラクタ
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormConfiguration.FormConfiguration_Load(System.Object,System.EventArgs)">
+            <summary>
+            フォームロード時のイベント
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormConfiguration.cmdOK_Click(System.Object,System.EventArgs)">
+            <summary>
+            OKボタンクリック時のイベント
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormConfiguration.cmdBGFileBrowse_Click(System.Object,System.EventArgs)">
+            <summary>
+            背景画像参照ボタンクリック時のイベント
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormConfiguration.cmdBackColor_Click(System.Object,System.EventArgs)">
+            <summary>
+            背景色変更ボタンクリック時のイベント
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormConfiguration.cmdButtonColor_Click(System.Object,System.EventArgs)">
+            <summary>
+            ボタン色変更ボタンクリック時のイベント
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormConfiguration.cmdTextColor_Click(System.Object,System.EventArgs)">
+            <summary>
+            テキスト色変更ボタンクリック時のイベント
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormConfiguration.cmdHighlightTextColor_Click(System.Object,System.EventArgs)">
+            <summary>
+            ハイライトテキスト色変更ボタンクリック時のイベント
+            </summary>
+        </member>
+        <member name="F:HiMenu.FormConfiguration.components">
+            <summary>
+            必要なデザイナー変数です。
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormConfiguration.Dispose(System.Boolean)">
+            <summary>
+            使用中のリソースをすべてクリーンアップします。
+            </summary>
+            <param name="disposing">マネージド リソースを破棄する場合は true を指定し、その他の場合は false を指定します。</param>
+        </member>
+        <member name="M:HiMenu.FormConfiguration.InitializeComponent">
+            <summary>
+            デザイナー サポートに必要なメソッドです。このメソッドの内容を
+            コード エディターで変更しないでください。
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormHiMenu.ProcessDialogKey(System.Windows.Forms.Keys)">
+            <summary>
+            キーボード入力
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormHiMenu.mnuFile_DropDownItemClicked(System.Object,System.Windows.Forms.ToolStripItemClickedEventArgs)">
+            <summary>
+            「ファイル」フォームメニュー・サブメニュークリック（イベント）
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormHiMenu.mnuFileMemberLockMode_DropDownItemClicked(System.Object,System.Windows.Forms.ToolStripItemClickedEventArgs)">
+            <summary>
+            「ファイル」「編集機能」フォームメニュー・サブメニュークリック（イベント）
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormHiMenu.mnuEdit_DropDownOpening(System.Object,System.EventArgs)">
+            <summary>
+            「編集」フォームメニューのDropDownOpening（イベント）
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormHiMenu.mnuEdit_DropDownClosed(System.Object,System.EventArgs)">
+            <summary>
+            「編集」フォームメニューのDropDownClosed（イベント）
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormHiMenu.mnuEdit_DropDownItemClicked(System.Object,System.Windows.Forms.ToolStripItemClickedEventArgs)">
+            <summary>
+            「編集」フォームメニュー・サブメニュークリック（イベント）
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormHiMenu.cmdMenuButton_Click(System.Object,System.EventArgs)">
+            <summary>
+            メニュー項目ボタンClick（イベント）
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormHiMenu.cmdMenuButton_Enter(System.Object,System.EventArgs)">
+            <summary>
+            メニュー項目ボタンEnter（イベント）
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormHiMenu.cmdMenuButton_Leave(System.Object,System.EventArgs)">
+            <summary>
+            メニュー項目ボタンLeave（イベント）
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormHiMenu.cmdMenuButton_MouseMove(System.Object,System.Windows.Forms.MouseEventArgs)">
+            <summary>
+            メニュー項目ボタンMouseMove（イベント）
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormHiMenu.cmdMenuButton_MouseDown(System.Object,System.Windows.Forms.MouseEventArgs)">
+            <summary>
+            メニュー項目ボタンMouseDown（イベント）
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormHiMenu.CreateMenuScreenMain(System.String,System.Boolean)">
+            <summary>
+            メニュー画面作成
+            </summary>
+            <param name="FileName">オープンするメニューファイル名</param>
+        </member>
+        <member name="M:HiMenu.FormHiMenu.SetFormObject">
+            <summary>
+            フォーム上のオブジェクトのセット
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormHiMenu.SetMenuCheckEdit">
+            <summary>
+            メインフォームのメニュー／ステータスバーの設定（編集可・不可の切り替え）
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormHiMenu.SetMenuCheckMode">
+            <summary>
+            メインフォームのメニュー／ステータスバーの設定（モードの切り替え）
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormHiMenu.SetButtonDisp(System.Int32,System.Boolean)">
+            <summary>
+            メニューボタンの表示／非表示の切り替え
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormHiMenu.ButtonClick(System.Int32)">
+            <summary>
+            メニューボタンクリック時の処理
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormHiMenu.ButtonEdit(System.Int32)">
+            <summary>
+            メニューボタンクリック時の、編集モードの処理
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormHiMenu.ButtonExec(System.Int32)">
+            <summary>
+            メニューボタンクリック時の、実行モードの処理
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormHiMenu.FormKeyEvent(System.Windows.Forms.Keys,System.Int32,System.Int32)">
+            <summary>
+            メインフォームのキーイベント
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormHiMenu.GoButton(System.Int32,System.Boolean)">
+            <summary>
+            メニュー間のセットフォーカス
+            </summary>
+        </member>
+        <member name="F:HiMenu.FormHiMenu.components">
+            <summary>
+            必要なデザイナー変数です。
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormHiMenu.Dispose(System.Boolean)">
+            <summary>
+            使用中のリソースをすべてクリーンアップします。
+            </summary>
+            <param name="disposing">マネージド リソースを破棄する場合は true を指定し、その他の場合は false を指定します。</param>
+        </member>
+        <member name="M:HiMenu.FormHiMenu.InitializeComponent">
+            <summary>
+            デザイナー サポートに必要なメソッドです。このメソッドの内容を
+            コード エディターで変更しないでください。
+            </summary>
+        </member>
+        <member name="M:HiMenu.Program.Main">
+            <summary>
+            アプリケーションのメイン エントリ ポイントです。
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormColor.#ctor">
+            <summary>
+            コンストラクタ
+            </summary>
+        </member>
+        <member name="P:HiMenu.FormColor.SelectedColor">
+            <summary>
+            選択された色
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormColor.FormColor_Load(System.Object,System.EventArgs)">
+            <summary>
+            フォームロード時のイベント
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormColor.cmdStandard_Click(System.Object,System.EventArgs)">
+            <summary>
+            標準ボタンクリック時のイベント
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormColor.cmdOK_Click(System.Object,System.EventArgs)">
+            <summary>
+            OKボタンクリック時のイベント
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormColor.Slider_ValueChanged(System.Object,System.EventArgs)">
+            <summary>
+            スライダーの値が変更された時のイベント
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormColor.TextBox_TextChanged(System.Object,System.EventArgs)">
+            <summary>
+            テキストボックスの値が変更された時のイベント
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormColor.SetColorToControls(System.Drawing.Color)">
+            <summary>
+            現在の色をコントロールに設定
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormColor.GetColorFromControls">
+            <summary>
+            コントロールから色を取得
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormColor.UpdatePreview">
+            <summary>
+            プレビュー更新
+            </summary>
+        </member>
+        <member name="F:HiMenu.FormColor.components">
+            <summary>
+            必要なデザイナー変数です。
+            </summary>
+        </member>
+        <member name="M:HiMenu.FormColor.Dispose(System.Boolean)">
+            <summary>
+            使用中のリソースをすべてクリーンアップします。
+            </summary>
+            <param name="disposing">マネージド リソースを破棄する場合は true を指定し、その他の場合は false を指定します。</param>
+        </member>
+        <member name="M:HiMenu.FormColor.InitializeComponent">
+            <summary>
+            デザイナー サポートに必要なメソッドです。このメソッドの内容を
+            コード エディターで変更しないでください。
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -15,7 +15,8 @@
     <AssemblyRevisionNumber>4</AssemblyRevisionNumber>
     <GenerateRevisionNumber>False</GenerateRevisionNumber>
     <AssemblyCompanyName>OKU Software</AssemblyCompanyName>
-    <ApplicationIcon>HIMENU.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
     <RootNamespace>HiMenu</RootNamespace>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -23,7 +24,6 @@
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <PublishUrl>http://localhost/HiMenu/</PublishUrl>
     <Install>true</Install>
@@ -60,6 +60,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>none</DebugType>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System">

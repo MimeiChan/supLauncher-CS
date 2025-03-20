@@ -116,7 +116,7 @@ namespace HiMenu
             // 
             // chkNoUse
             // 
-            this.chkNoUse.Location = new System.Drawing.Point(127, 229);
+            this.chkNoUse.Location = new System.Drawing.Point(127, 260);
             this.chkNoUse.Name = "chkNoUse";
             this.chkNoUse.Size = new System.Drawing.Size(131, 24);
             this.chkNoUse.TabIndex = 9;
@@ -216,7 +216,7 @@ namespace HiMenu
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(493, 262);
+            this.ClientSize = new System.Drawing.Size(493, 318);
             this.Controls.Add(this.cmdBrowse);
             this.Controls.Add(this.cmdCancel);
             this.Controls.Add(this.cmdOK);

@@ -189,10 +189,17 @@ namespace HiMenu
             Current
         }
 
+        /// <summary>
+        /// コンストラクタ（privateでシングルトンパターンを実現）
+        /// </summary>
         private CMenuPage()
         {
         }
 
+        /// <summary>
+        /// シングルトンインスタンスを取得するメソッド
+        /// </summary>
+        /// <returns>CMenuPageのインスタンス</returns>
         internal static CMenuPage GetInstance()
         {
             return mObj;
@@ -200,6 +207,10 @@ namespace HiMenu
 
         #region メニューファイル情報関連
 
+        /// <summary>
+        /// メニューページの設定を初期化する
+        /// デフォルトの値をすべてのプロパティに設定する
+        /// </summary>
         internal void Initalize()
         {
             m_MenuRows = 10;
@@ -241,6 +252,10 @@ namespace HiMenu
             m_Changed = false;
         }
 
+        /// <summary>
+        /// メニューファイルを読み込み、設定を適用する
+        /// ファイルが存在しない場合は初期化のみを行う
+        /// </summary>
         internal void MenuFileRead()
         {
             // 変数初期化
@@ -383,6 +398,11 @@ namespace HiMenu
             m_Changed = false;
         }
 
+        /// <summary>
+        /// メニューの設定をファイルに保存する
+        /// 変更がある場合はユーザーに保存の確認を行う
+        /// </summary>
+        /// <returns>保存処理の結果を示すDialogResult</returns>
         internal DialogResult MenuFileWrite()
         {
             if (m_Changed)
@@ -417,6 +437,10 @@ namespace HiMenu
             return DialogResult.OK;
         }
 
+        /// <summary>
+        /// メニューの設定内容をファイルに書き込む
+        /// </summary>
+        /// <returns>書き込みが成功した場合はtrue</returns>
         internal bool MenuFileWriteBody()
         {
             Encoding encoding = Encoding.GetEncoding("Shift-JIS");
@@ -480,6 +504,9 @@ namespace HiMenu
             return true;
         }
 
+        /// <summary>
+        /// メニューの位置情報のみをファイルに書き込む
+        /// </summary>
         internal void MenuFileWriteLocateOnly()
         {
             if (m_RootMenuDispPosition == MenuDispPosition.ScreenCenter) return;
@@ -512,6 +539,10 @@ namespace HiMenu
             Debug.Print(strFileName + " " + strLeftPnt + " " + strTopPnt);
         }
 
+        /// <summary>
+        /// メニュー項目の数を設定された行数と列数に合わせて調整する
+        /// </summary>
+        /// <param name="intTargetItemCountArg">設定する項目数（-1の場合は現在の行数×列数）</param>
         internal void MenuItemsCountSet(int intTargetItemCountArg = -1)
         {
             int intNowItemCount = m_MenuFileItem.Count;
@@ -537,18 +568,27 @@ namespace HiMenu
 
         #region プロパティー(保存対象：変更チェック無し)
 
+        /// <summary>
+        /// メニューフォームのX座標を取得または設定
+        /// </summary>
         internal int CurrentX
         {
             get { return m_CurrentX; }
             set { m_CurrentX = value; }
         }
 
+        /// <summary>
+        /// メニューフォームのY座標を取得または設定
+        /// </summary>
         internal int CurrentY
         {
             get { return m_CurrentY; }
             set { m_CurrentY = value; }
         }
 
+        /// <summary>
+        /// メニューのロック状態を取得または設定
+        /// </summary>
         internal bool LockOn
         {
             get { return m_LockOn; }
@@ -565,6 +605,10 @@ namespace HiMenu
 
         #region プロパティー(保存対象：変更チェック有り)
 
+        /// <summary>
+        /// メニューの行数を取得または設定
+        /// 値が変更された場合は変更フラグを設定する
+        /// </summary>
         internal int MenuRows
         {
             get { return m_MenuRows; }
@@ -578,6 +622,10 @@ namespace HiMenu
             }
         }
 
+        /// <summary>
+        /// メニューの列数を取得または設定
+        /// 値が変更された場合は変更フラグを設定する
+        /// </summary>
         internal int MenuCols
         {
             get { return m_MenuCols; }
@@ -591,6 +639,10 @@ namespace HiMenu
             }
         }
 
+        /// <summary>
+        /// メニューフォームの幅を取得または設定
+        /// 値が変更された場合は変更フラグを設定する
+        /// </summary>
         internal int MenuWidth
         {
             get { return m_MenuWidth; }
@@ -604,6 +656,10 @@ namespace HiMenu
             }
         }
 
+        /// <summary>
+        /// メニューフォームの高さを取得または設定
+        /// 値が変更された場合は変更フラグを設定する
+        /// </summary>
         internal int MenuHeight
         {
             get { return m_MenuHeight; }
@@ -617,6 +673,10 @@ namespace HiMenu
             }
         }
 
+        /// <summary>
+        /// メニューのタイトルを取得または設定
+        /// 値が変更された場合は変更フラグを設定する
+        /// </summary>
         internal string MenuTitle
         {
             get { return m_MenuTitle; }
@@ -630,6 +690,10 @@ namespace HiMenu
             }
         }
 
+        /// <summary>
+        /// キャンセルボタンのインデックスを取得または設定
+        /// 値が変更された場合は変更フラグを設定する
+        /// </summary>
         internal int CancelButton
         {
             get { return m_CancelButton; }
@@ -643,6 +707,10 @@ namespace HiMenu
             }
         }
 
+        /// <summary>
+        /// フォント名を取得または設定
+        /// 値が変更された場合は変更フラグを設定する
+        /// </summary>
         internal string FontName
         {
             get { return m_FontName; }
@@ -656,6 +724,10 @@ namespace HiMenu
             }
         }
 
+        /// <summary>
+        /// フォントサイズを取得または設定
+        /// 値が変更された場合は変更フラグを設定する
+        /// </summary>
         internal float FontSize
         {
             get { return m_FontSize; }
@@ -669,6 +741,10 @@ namespace HiMenu
             }
         }
 
+        /// <summary>
+        /// フォントの太字設定を取得または設定
+        /// 値が変更された場合は変更フラグを設定する
+        /// </summary>
         internal bool FontBold
         {
             get { return m_FontBold; }
@@ -682,6 +758,10 @@ namespace HiMenu
             }
         }
 
+        /// <summary>
+        /// フォントの斜体設定を取得または設定
+        /// 値が変更された場合は変更フラグを設定する
+        /// </summary>
         internal bool FontItalic
         {
             get { return m_FontItalic; }
@@ -695,6 +775,10 @@ namespace HiMenu
             }
         }
 
+        /// <summary>
+        /// フォントの下線設定を取得または設定
+        /// 値が変更された場合は変更フラグを設定する
+        /// </summary>
         internal bool FontUnderline
         {
             get { return m_FontUnderline; }
@@ -708,6 +792,10 @@ namespace HiMenu
             }
         }
 
+        /// <summary>
+        /// メニューの表示位置を取得または設定
+        /// 値が変更された場合は変更フラグを設定し、ルートメニューの場合は表示位置を記憶する
+        /// </summary>
         internal MenuDispPosition DispPosition
         {
             get { return m_DispPosition; }
@@ -726,6 +814,10 @@ namespace HiMenu
             }
         }
 
+        /// <summary>
+        /// 背景画像ファイル名を取得または設定
+        /// 値が変更された場合は変更フラグを設定する
+        /// </summary>
         internal string BGFile
         {
             get { return m_BGFile; }
@@ -739,6 +831,10 @@ namespace HiMenu
             }
         }
 
+        /// <summary>
+        /// 背景画像のタイル表示設定を取得または設定
+        /// 値が変更された場合は変更フラグを設定する
+        /// </summary>
         internal bool BGTile
         {
             get { return m_BGTile; }
@@ -752,6 +848,10 @@ namespace HiMenu
             }
         }
 
+        /// <summary>
+        /// メニューの表示状態を取得または設定
+        /// 値が変更された場合は変更フラグを設定する
+        /// </summary>
         internal bool MenuVisible
         {
             get { return m_MenuVisible; }
@@ -765,6 +865,10 @@ namespace HiMenu
             }
         }
 
+        /// <summary>
+        /// ステータスバーの表示状態を取得または設定
+        /// 値が変更された場合は変更フラグを設定する
+        /// </summary>
         internal bool StatusBarVisible
         {
             get { return m_StatusBarVisible; }
@@ -778,6 +882,10 @@ namespace HiMenu
             }
         }
 
+        /// <summary>
+        /// メニューのロックパスワードを取得または設定
+        /// 値が変更された場合は変更フラグを設定する
+        /// </summary>
         internal string LockPassword
         {
             get { return m_LockPassword; }
@@ -791,6 +899,10 @@ namespace HiMenu
             }
         }
 
+        /// <summary>
+        /// メニューの背景色を取得または設定
+        /// 値が変更された場合は変更フラグを設定する
+        /// </summary>
         internal int BackColor
         {
             get { return m_BackColor; }
@@ -804,6 +916,10 @@ namespace HiMenu
             }
         }
 
+        /// <summary>
+        /// ボタンの背景色を取得または設定
+        /// 値が変更された場合は変更フラグを設定する
+        /// </summary>
         internal int ButtonColor
         {
             get { return m_ButtonColor; }
@@ -817,6 +933,10 @@ namespace HiMenu
             }
         }
 
+        /// <summary>
+        /// ボタンのテキスト色を取得または設定
+        /// 値が変更された場合は変更フラグを設定する
+        /// </summary>
         internal int TextColor
         {
             get { return m_TextColor; }
@@ -830,6 +950,10 @@ namespace HiMenu
             }
         }
 
+        /// <summary>
+        /// ボタンの選択時テキスト色を取得または設定
+        /// 値が変更された場合は変更フラグを設定する
+        /// </summary>
         internal int HighLightTextColor
         {
             get { return m_HighLightTextColor; }
@@ -843,7 +967,11 @@ namespace HiMenu
             }
         }
 
-        // C#でインデクサーを使用したプロパティとして正しく実装
+        /// <summary>
+        /// メニュー項目を取得または設定するインデクサー
+        /// 値が変更された場合は変更フラグを設定する
+        /// </summary>
+        /// <param name="Index">メニュー項目のインデックス</param>
         internal CMenuFileItemInf this[int Index]
         {
             get { return m_MenuFileItem[Index]; }
@@ -854,18 +982,30 @@ namespace HiMenu
             }
         }
 
-        // 既存のコードとの互換性のために、メソッドも提供
+        /// <summary>
+        /// メニュー項目を取得する
+        /// </summary>
+        /// <param name="Index">メニュー項目のインデックス</param>
+        /// <returns>指定されたインデックスのメニュー項目</returns>
         internal CMenuFileItemInf GetMenuFileItem(int Index)
         {
             return m_MenuFileItem[Index];
         }
 
+        /// <summary>
+        /// メニュー項目を設定する
+        /// </summary>
+        /// <param name="Index">メニュー項目のインデックス</param>
+        /// <param name="value">設定するメニュー項目</param>
         internal void SetMenuFileItem(int Index, CMenuFileItemInf value)
         {
             m_MenuFileItem[Index] = value;
             m_Changed = true;
         }
 
+        /// <summary>
+        /// メニュー項目の表示状態が変更されたことを通知する
+        /// </summary>
         internal void MenuFileItemHiddenChanged()
         {
             m_Changed = true;
@@ -875,18 +1015,28 @@ namespace HiMenu
 
         #region プロパティー
 
+        /// <summary>
+        /// メニューフォームへの参照を取得または設定
+        /// </summary>
         internal FormHiMenu MenuForm
         {
             get { return m_MenuForm; }
             set { m_MenuForm = value; }
         }
 
+        /// <summary>
+        /// 現在選択されているボタンのインデックスを取得または設定
+        /// </summary>
         internal int CurrentButton
         {
             get { return m_CurrentButton; }
             set { m_CurrentButton = value; }
         }
 
+        /// <summary>
+        /// メニューファイル名を取得または設定
+        /// ファイル名が空の場合はデフォルトのパスを設定する
+        /// </summary>
         internal string MenuFileName
         {
             get { return m_MenuFileName; }
@@ -931,6 +1081,10 @@ namespace HiMenu
             }
         }
 
+        /// <summary>
+        /// メニューで使用するフォントを取得
+        /// 現在の設定に基づいてフォントオブジェクトを生成する
+        /// </summary>
         internal Font Font
         {
             get
@@ -943,11 +1097,17 @@ namespace HiMenu
             }
         }
 
+        /// <summary>
+        /// メニューの内容が変更されているかどうかを取得
+        /// </summary>
         internal bool Changed
         {
             get { return m_Changed; }
         }
 
+        /// <summary>
+        /// ルートメニューの表示位置を取得
+        /// </summary>
         internal MenuDispPosition RootMenuDispPosition
         {
             get { return m_RootMenuDispPosition; }
