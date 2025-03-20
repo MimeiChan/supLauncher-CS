@@ -845,7 +845,10 @@ namespace HiMenu
 
         internal CMenuFileItemInf MenuFileItem(int Index)
         {
-            get { return m_MenuFileItem[Index]; }
+            get 
+            { 
+                return m_MenuFileItem[Index]; 
+            }
             set
             {
                 m_MenuFileItem[Index] = value;
