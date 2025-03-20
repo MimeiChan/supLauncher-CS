@@ -724,7 +724,9 @@ namespace HiMenu
                 this.CancelButton = m_MenuButtons[intIndex - 1];
             }
             
+            // 背景色の設定（pnlContainerとpicContainerの両方に設定）
             pnlContainer.BackColor = ColorTranslator.FromOle(m_CMenuPage.BackColor);
+            picContainer.BackColor = ColorTranslator.FromOle(m_CMenuPage.BackColor);
             
             // 隠していたボタンを再表示
             pnlContainer.Visible = true;
