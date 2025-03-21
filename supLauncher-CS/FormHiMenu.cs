@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using TheArtOfDev.HtmlRenderer.WinForms;
 
 namespace HiMenu
 {
@@ -18,6 +19,12 @@ namespace HiMenu
         // XML関連メニュー項目
         private ToolStripMenuItem mnuFileMemberNewXml;
         private ToolStripMenuItem mnuFileMemberOpenXml;
+        
+        // HTMLレンダラー関連
+        private HtmlPanel htmlPanel;
+        private HtmlMenuRenderer htmlMenuRenderer;
+        private bool useHtmlRenderer = true; // HTMLレンダラーモードの切り替えフラグ
+        private ToolStripMenuItem mnuFileMemberUiMode;
 
         private int SaveCurrentButton; // マウス移動によるアイテムコメント表示中ボタンインデックス
 
@@ -28,6 +35,10 @@ namespace HiMenu
         /// </summary>
         protected override bool ProcessDialogKey(Keys keyData)
         {
+            // HTMLレンダラーモードではキー処理をスキップ
+            if (useHtmlRenderer)
+                return base.ProcessDialogKey(keyData);
+                
             // メニュー項目間の矢印キーでの移動処理を実現する
             if (this.ActiveControl is Button)
             {
@@ -74,12 +85,22 @@ namespace HiMenu
                     e.Cancel = true;
                     break;
             }
+            
+            // HTMLレンダラーのリソース解放
+            if (htmlMenuRenderer != null)
+            {
+                htmlMenuRenderer.Dispose();
+                htmlMenuRenderer = null;
+            }
         }
 
         private void FormHiMenu_Load(object sender, EventArgs e)
         {
             // XML関連メニュー項目の追加
             AddXmlMenuItems();
+            
+            // UIモード切り替えメニューの追加
+            AddUiModeMenuItem();
 
             // ちらつき防止
             this.SetStyle(ControlStyles.DoubleBuffer, true);
@@ -108,13 +129,128 @@ namespace HiMenu
             mnuFileMemberAbout.Text = Application.ProductName + " について...";
 
             m_CMenuPage.MenuForm = this;
+            
+            // HTMLレンダラーの初期化
+            if (useHtmlRenderer)
+            {
+                InitializeHtmlRenderer();
+            }
 
             CreateMenuScreenMain(strFileName, true);
         }
 
         private void FormHiMenu_Shown(object sender, EventArgs e)
         {
-            GoButton(0);
+            if (!useHtmlRenderer)
+            {
+                GoButton(0);
+            }
+        }
+
+        #endregion
+
+        #region HTMLレンダラー関連
+
+        /// <summary>
+        /// HTMLレンダラーの初期化
+        /// </summary>
+        private void InitializeHtmlRenderer()
+        {
+            try
+            {
+                // HtmlPanelの作成と初期化
+                htmlPanel = new HtmlPanel();
+                htmlPanel.Dock = DockStyle.Fill;
+                htmlPanel.BackColor = Color.Transparent;
+                htmlPanel.AutoScroll = true;
+                
+                // HtmlPanelをコンテナに追加
+                picContainer.Controls.Add(htmlPanel);
+                
+                // HTMLレンダラーラッパーの初期化
+                htmlMenuRenderer = new HtmlMenuRenderer(htmlPanel, m_CMenuPage);
+                
+                // ボタンクリックイベントのハンドラを設定
+                htmlMenuRenderer.ButtonClick += HtmlMenuRenderer_ButtonClick;
+                
+                // フォルダ作成
+                string htmlUiPath = Path.Combine(Application.StartupPath, "HtmlUI");
+                if (!Directory.Exists(htmlUiPath))
+                {
+                    Directory.CreateDirectory(htmlUiPath);
+                }
+                
+                // CSSファイルをコピー
+                string cssFile = Path.Combine(htmlUiPath, "style.css");
+                if (!File.Exists(cssFile))
+                {
+                    // アセンブリから読み込むか、ハードコードしたCSSを保存
+                    string cssContent = @"
+.menu-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+}
+
+.menu-button {
+    display: inline-block;
+    margin: 5px;
+    padding: 15px;
+    min-width: 120px;
+    min-height: 60px;
+    text-align: center;
+    color: #ffffff;
+    background-color: #4361ee;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.menu-button:hover {
+    background-color: #3a56d4;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.menu-button.hidden {
+    opacity: 0.5;
+    background-color: #6c757d;
+}
+
+.menu-button.escape {
+    background-color: #f72585;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #212529;
+        color: #e9ecef;
+    }
+}";
+                    File.WriteAllText(cssFile, cssContent);
+                }
+                
+                // メニューの更新
+                htmlMenuRenderer.RefreshMenu();
+            }
+            catch (Exception ex)
+            {
+                // HTMLレンダラーの初期化に失敗した場合は従来のUIに戻す
+                MessageBox.Show("HTMLレンダラーの初期化に失敗しました。従来のUIに戻します。\n\n" + ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                useHtmlRenderer = false;
+                htmlPanel = null;
+            }
+        }
+
+        /// <summary>
+        /// HTMLレンダラーのボタンクリックイベントハンドラ
+        /// </summary>
+        private void HtmlMenuRenderer_ButtonClick(object sender, int buttonIndex)
+        {
+            ButtonClick(buttonIndex);
         }
 
         #endregion
@@ -177,7 +313,11 @@ namespace HiMenu
                     {
                         m_CMenuPage.MenuItemsCountSet();
                         SetFormObject();
-                        GoButton(0);
+                        
+                        if (!useHtmlRenderer)
+                        {
+                            GoButton(0);
+                        }
                     }
                 }
             }
@@ -203,7 +343,11 @@ namespace HiMenu
                         m_CMenuPage.MenuFileName = dlg.FileName;
                         m_CMenuPage.Initalize();
                         SetFormObject();
-                        GoButton(0);
+                        
+                        if (!useHtmlRenderer)
+                        {
+                            GoButton(0);
+                        }
                     }
                 }
             }
@@ -222,9 +366,85 @@ namespace HiMenu
                         }
                         
                         CreateMenuScreenMain(dlg.FileName);
-                        GoButton(0);
+                        
+                        if (!useHtmlRenderer)
+                        {
+                            GoButton(0);
+                        }
                     }
                 }
+            }
+            else if (MenuItem == mnuFileMemberUiMode)
+            {
+                ToggleUiMode();
+            }
+        }
+        
+        /// <summary>
+        /// UIモード（HTML/従来）切り替え処理
+        /// </summary>
+        private void ToggleUiMode()
+        {
+            if (useHtmlRenderer)
+            {
+                // HTML -> 従来UIに切り替え
+                useHtmlRenderer = false;
+                mnuFileMemberUiMode.Text = "モダンUIに切り替え(&M)";
+                
+                if (htmlPanel != null)
+                {
+                    picContainer.Controls.Remove(htmlPanel);
+                    htmlMenuRenderer.Dispose();
+                    htmlMenuRenderer = null;
+                    htmlPanel.Dispose();
+                    htmlPanel = null;
+                }
+                
+                SetFormObject();
+                GoButton(0);
+            }
+            else
+            {
+                // 従来 -> HTMLUIに切り替え
+                useHtmlRenderer = true;
+                mnuFileMemberUiMode.Text = "従来のUIに切り替え(&M)";
+                
+                HideTraditionalButtons();
+                InitializeHtmlRenderer();
+                SetFormObject();
+            }
+        }
+        
+        /// <summary>
+        /// 従来のボタンを非表示にする
+        /// </summary>
+        private void HideTraditionalButtons()
+        {
+            foreach (Button button in m_MenuButtons)
+            {
+                button.Visible = false;
+            }
+        }
+        
+        /// <summary>
+        /// UIモード切り替えメニューの追加
+        /// </summary>
+        private void AddUiModeMenuItem()
+        {
+            // UIモード切り替えメニュー項目
+            mnuFileMemberUiMode = new ToolStripMenuItem(useHtmlRenderer ? "従来のUIに切り替え(&M)" : "モダンUIに切り替え(&M)");
+            
+            // メニューに追加
+            int insertIndex = mnuFile.DropDownItems.IndexOf(mnuFileMemberOption);
+            if (insertIndex >= 0)
+            {
+                mnuFile.DropDownItems.Insert(insertIndex + 1, new ToolStripSeparator());
+                mnuFile.DropDownItems.Insert(insertIndex + 2, mnuFileMemberUiMode);
+            }
+            else
+            {
+                mnuFile.DropDownItems.Add(new ToolStripSeparator());
+                mnuFile.DropDownItems.Add(mnuFileMemberUiMode);
             }
         }
 
@@ -290,6 +510,15 @@ namespace HiMenu
         /// </summary>
         private void mnuEdit_DropDownOpening(object sender, EventArgs e)
         {
+            if (useHtmlRenderer)
+            {
+                foreach (ToolStripItem item in mnuEdit.DropDownItems)
+                {
+                    item.Enabled = false;
+                }
+                return;
+            }
+
             int CurrentButton = m_MenuButtons.IndexOf((Button)this.ActiveControl);
 
             mnuEditMemberPaste.Enabled = (Clipboard.GetData("HiMenuItem") != null);
@@ -302,7 +531,10 @@ namespace HiMenu
         /// </summary>
         private void mnuEdit_DropDownClosed(object sender, EventArgs e)
         {
-            mnuEditMemberPaste.Enabled = true;
+            if (!useHtmlRenderer)
+            {
+                mnuEditMemberPaste.Enabled = true;
+            }
         }
 
         /// <summary>
@@ -310,7 +542,7 @@ namespace HiMenu
         /// </summary>
         private void mnuEdit_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            if (!(e.ClickedItem is ToolStripMenuItem))
+            if (useHtmlRenderer || !(e.ClickedItem is ToolStripMenuItem))
                 return;
 
             ToolStripMenuItem MenuItem = (ToolStripMenuItem)e.ClickedItem;
@@ -377,7 +609,7 @@ namespace HiMenu
                 SetFormObject();
             }
 
-            if (blnMove)
+            if (!useHtmlRenderer && blnMove)
                 GoButton(CurrentButton);
         }
 
@@ -471,6 +703,12 @@ namespace HiMenu
             // メニューファイル読み込み
             m_CMenuPage.MenuFileRead();
 
+            // HTMLレンダラーモードの場合はHTMLパネルを更新
+            if (useHtmlRenderer && htmlMenuRenderer != null)
+            {
+                htmlMenuRenderer.RefreshMenu();
+            }
+            
             // メニューフォーム内のボタン等の設定
             SetFormObject();
 
@@ -580,6 +818,52 @@ namespace HiMenu
         /// </summary>
         private void SetFormObject()
         {
+            // HTMLレンダラーモードでは従来のボタン処理をスキップ
+            if (useHtmlRenderer)
+            {
+                // キャプションとサイズ設定のみ行う
+                if (m_CMenuPage.MenuTitle.Length != 0)
+                {
+                    this.Text = Application.ProductName + " - " + m_CMenuPage.MenuTitle;
+                }
+                else
+                {
+                    this.Text = Application.ProductName;
+                }
+
+                // メニュー・ステータスバーの表示／非表示切り替え
+                if (m_CMenuPage.LockOn)
+                {
+                    mnuEdit.Visible = false;
+                }
+                else
+                {
+                    mnuEdit.Visible = m_CMenuPage.MenuVisible && (m_CMenuPage.LockOn == false);
+                }
+                
+                MainMenu1.Visible = m_CMenuPage.MenuVisible;
+                StatusStripInformation.Visible = m_CMenuPage.StatusBarVisible;
+
+                // ﾌｫｰﾑｻｲｽﾞ調整
+                this.Width = m_CMenuPage.MenuWidth;
+                this.Height = m_CMenuPage.MenuHeight;
+
+                SetMenuCheckEdit();
+                SetMenuCheckMode();
+
+                // 背景色の設定
+                pnlContainer.BackColor = ColorTranslator.FromOle(m_CMenuPage.BackColor);
+                picContainer.BackColor = ColorTranslator.FromOle(m_CMenuPage.BackColor);
+                
+                // HTMLレンダラーの更新
+                if (htmlMenuRenderer != null)
+                {
+                    htmlMenuRenderer.RefreshMenu();
+                }
+                
+                return;
+            }
+
             const int intMarginX = 15;
             const int intMarginY = 8;
             int intIndex;
@@ -769,7 +1053,7 @@ namespace HiMenu
             this.CancelButton = null;
             if (m_CMenuPage.CancelButton != -1 && intNowItemCount > m_CMenuPage.CancelButton && m_CMenuPage.LockOn)
             {
-                this.CancelButton = m_MenuButtons[intIndex - 1];
+                this.CancelButton = m_MenuButtons[m_CMenuPage.CancelButton];
             }
             
             // 背景色の設定（pnlContainerとpicContainerの両方に設定）
@@ -896,7 +1180,10 @@ namespace HiMenu
                 if (frmDialog.ShowDialog(this) == DialogResult.OK)
                 {
                     SetFormObject();
-                    GoButton(Index);
+                    if (!useHtmlRenderer)
+                    {
+                        GoButton(Index);
+                    }
                 }
             }
         }
@@ -1047,13 +1334,16 @@ namespace HiMenu
 
                                 CreateMenuScreenMain(strNextMenuPath + strFileName);
 
-                                if (item.Attribute == CMenuPage.CMenuFileItemInf.ItemAttribute.BackPrevMenu)
+                                if (!useHtmlRenderer)
                                 {
-                                    GoButton(intRevIndex);
-                                }
-                                else
-                                {
-                                    GoButton(0);
+                                    if (item.Attribute == CMenuPage.CMenuFileItemInf.ItemAttribute.BackPrevMenu)
+                                    {
+                                        GoButton(intRevIndex);
+                                    }
+                                    else
+                                    {
+                                        GoButton(0);
+                                    }
                                 }
                                 break;
                         }
@@ -1104,6 +1394,10 @@ namespace HiMenu
         /// </summary>
         private void FormKeyEvent(Keys KeyCode, int Shift, int intIndex)
         {
+            // HTML UI モードでは処理をスキップ
+            if (useHtmlRenderer)
+                return;
+                
             int intSaveIndex;
             int intNowRow;
             int intNowCol;
@@ -1197,6 +1491,10 @@ namespace HiMenu
         /// </summary>
         private void GoButton(int intIndex, bool valFlag = false)
         {
+            // HTMLレンダラーモードでは処理をスキップ
+            if (useHtmlRenderer)
+                return;
+                
             int intLoop;
             Control objControl = this.ActiveControl;
 
