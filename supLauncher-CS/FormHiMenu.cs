@@ -163,6 +163,7 @@ namespace HiMenu
 
                 // WebView2とC#間のブリッジを設定
                 webViewBridge = new WebViewBridge(m_CMenuPage);
+                // COMオブジェクトとしてスクリプトに追加
                 webView.CoreWebView2.AddHostObjectToScript("menuData", webViewBridge);
 
                 // メッセージハンドラを登録
@@ -225,7 +226,13 @@ namespace HiMenu
                             <script>
                                 document.addEventListener('DOMContentLoaded', async function() {
                                     try {
-                                        const menuItems = await window.chrome.webview.hostObjects.menuData.getMenuItems();
+                                        // JSON文字列として取得してからパース
+                                        const menuItemsJson = await window.chrome.webview.hostObjects.menuData.getMenuItemsJson();
+                                        const menuItems = JSON.parse(menuItemsJson);
+                                        
+                                        // 配列として直接取得する別の方法
+                                        // const menuItems = await window.chrome.webview.hostObjects.menuData.getMenuItems();
+                                        
                                         const container = document.getElementById('menu-container');
                                         
                                         for (let i = 0; i < menuItems.length; i++) {
