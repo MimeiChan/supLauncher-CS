@@ -25,10 +25,10 @@ namespace HiMenu
         }
 
         /// <summary>
-        /// すべてのメニュー項目を取得する
+        /// すべてのメニュー項目を取得する (コレクションの代わりにJSON文字列を返す)
         /// </summary>
-        /// <returns>メニュー項目のリスト</returns>
-        public List<MenuItemDto> GetMenuItems()
+        /// <returns>メニュー項目のJSON文字列</returns>
+        public string GetMenuItemsJson()
         {
             var items = new List<MenuItemDto>();
             int totalItems = m_CMenuPage.MenuRows * m_CMenuPage.MenuCols;
@@ -48,7 +48,34 @@ namespace HiMenu
                 });
             }
 
-            return items;
+            return JsonSerializer.Serialize(items);
+        }
+
+        /// <summary>
+        /// すべてのメニュー項目を配列で取得する
+        /// </summary>
+        /// <returns>メニュー項目の配列</returns>
+        public MenuItemDto[] GetMenuItems()
+        {
+            var items = new List<MenuItemDto>();
+            int totalItems = m_CMenuPage.MenuRows * m_CMenuPage.MenuCols;
+
+            for (int i = 0; i < totalItems; i++)
+            {
+                var item = m_CMenuPage[i];
+                items.Add(new MenuItemDto
+                {
+                    Title = item.Title,
+                    Comment = item.Comment,
+                    Command = item.Command,
+                    Flag = item.Flag,
+                    NoUse = item.NoUse,
+                    Attribute = (int)item.Attribute,
+                    After = (int)item.After
+                });
+            }
+
+            return items.ToArray();
         }
 
         /// <summary>
@@ -91,25 +118,18 @@ namespace HiMenu
     [ComVisible(true)]
     public class MenuItemDto
     {
-        [ComVisible(true)]
         public string Title { get; set; } = "";
 
-        [ComVisible(true)]
         public string Comment { get; set; } = "";
 
-        [ComVisible(true)]
         public string Command { get; set; } = "";
 
-        [ComVisible(true)]
         public string Flag { get; set; } = "";
 
-        [ComVisible(true)]
         public bool NoUse { get; set; }
 
-        [ComVisible(true)]
         public int Attribute { get; set; }
 
-        [ComVisible(true)]
         public int After { get; set; }
     }
 
@@ -119,25 +139,18 @@ namespace HiMenu
     [ComVisible(true)]
     public class ThemeDto
     {
-        [ComVisible(true)]
         public string PrimaryColor { get; set; } = "#4361ee";
 
-        [ComVisible(true)]
         public string PrimaryHover { get; set; } = "#3a56d4";
 
-        [ComVisible(true)]
         public string SecondaryColor { get; set; } = "#f72585";
 
-        [ComVisible(true)]
         public string TextColor { get; set; } = "#2b2d42";
 
-        [ComVisible(true)]
         public string HighlightTextColor { get; set; } = "#ffffff";
 
-        [ComVisible(true)]
         public string BackgroundColor { get; set; } = "#f8f9fa";
 
-        [ComVisible(true)]
         public string ButtonText { get; set; } = "#ffffff";
     }
 
