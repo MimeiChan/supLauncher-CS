@@ -91,12 +91,25 @@ namespace HiMenu
     [ComVisible(true)]
     public class MenuItemDto
     {
+        [ComVisible(true)]
         public string Title { get; set; } = "";
+
+        [ComVisible(true)]
         public string Comment { get; set; } = "";
+
+        [ComVisible(true)]
         public string Command { get; set; } = "";
+
+        [ComVisible(true)]
         public string Flag { get; set; } = "";
+
+        [ComVisible(true)]
         public bool NoUse { get; set; }
+
+        [ComVisible(true)]
         public int Attribute { get; set; }
+
+        [ComVisible(true)]
         public int After { get; set; }
     }
 
@@ -106,12 +119,25 @@ namespace HiMenu
     [ComVisible(true)]
     public class ThemeDto
     {
+        [ComVisible(true)]
         public string PrimaryColor { get; set; } = "#4361ee";
+
+        [ComVisible(true)]
         public string PrimaryHover { get; set; } = "#3a56d4";
+
+        [ComVisible(true)]
         public string SecondaryColor { get; set; } = "#f72585";
+
+        [ComVisible(true)]
         public string TextColor { get; set; } = "#2b2d42";
+
+        [ComVisible(true)]
         public string HighlightTextColor { get; set; } = "#ffffff";
+
+        [ComVisible(true)]
         public string BackgroundColor { get; set; } = "#f8f9fa";
+
+        [ComVisible(true)]
         public string ButtonText { get; set; } = "#ffffff";
     }
 
