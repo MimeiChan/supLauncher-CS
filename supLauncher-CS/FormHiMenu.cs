@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Text.Json;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.WinForms;
 
 namespace HiMenu
 {
@@ -19,6 +23,11 @@ namespace HiMenu
         private ToolStripMenuItem mnuFileMemberNewXml;
         private ToolStripMenuItem mnuFileMemberOpenXml;
 
+        // WebView2関連
+        private WebView2 webView;
+        private WebViewBridge webViewBridge;
+        private bool useWebView = true; // WebViewモードの切り替えフラグ
+
         private int SaveCurrentButton; // マウス移動によるアイテムコメント表示中ボタンインデックス
 
         #region フォームオーバーライド関数
@@ -28,6 +37,10 @@ namespace HiMenu
         /// </summary>
         protected override bool ProcessDialogKey(Keys keyData)
         {
+            // WebViewモードの場合はキー処理をスキップ
+            if (useWebView)
+                return base.ProcessDialogKey(keyData);
+
             // メニュー項目間の矢印キーでの移動処理を実現する
             if (this.ActiveControl is Button)
             {
@@ -76,10 +89,13 @@ namespace HiMenu
             }
         }
 
-        private void FormHiMenu_Load(object sender, EventArgs e)
+        private async void FormHiMenu_Load(object sender, EventArgs e)
         {
             // XML関連メニュー項目の追加
             AddXmlMenuItems();
+            
+            // WebView2/従来UIモード切り替えメニューの追加
+            AddUIModeSwitchMenuItem();
 
             // ちらつき防止
             this.SetStyle(ControlStyles.DoubleBuffer, true);
@@ -109,12 +125,216 @@ namespace HiMenu
 
             m_CMenuPage.MenuForm = this;
 
+            // WebView2の初期化
+            if (useWebView)
+            {
+                await InitializeWebView();
+            }
+
             CreateMenuScreenMain(strFileName, true);
         }
 
         private void FormHiMenu_Shown(object sender, EventArgs e)
         {
-            GoButton(0);
+            if (!useWebView)
+            {
+                GoButton(0);
+            }
+        }
+
+        #endregion
+
+        #region WebView2関連
+
+        /// <summary>
+        /// WebView2コントロールを初期化する
+        /// </summary>
+        private async Task InitializeWebView()
+        {
+            try
+            {
+                // WebView2の作成と初期化
+                webView = new WebView2();
+                webView.Dock = DockStyle.Fill;
+                picContainer.Controls.Add(webView);
+
+                // WebView2コアの初期化を待機
+                await webView.EnsureCoreWebView2Async();
+
+                // WebView2とC#間のブリッジを設定
+                webViewBridge = new WebViewBridge(m_CMenuPage);
+                webView.CoreWebView2.AddHostObjectToScript("menuData", webViewBridge);
+
+                // メッセージハンドラを登録
+                webView.WebMessageReceived += WebView_WebMessageReceived;
+
+                // ローカルWebUIを読み込む
+                string baseDirectory = Path.GetDirectoryName(Application.ExecutablePath);
+                string webUiPath = Path.Combine(baseDirectory, "WebUI");
+                
+                // WebUIフォルダが存在しない場合は作成
+                if (!Directory.Exists(webUiPath))
+                {
+                    Directory.CreateDirectory(webUiPath);
+                    // HTMLとCSSファイルのコピー処理を追加する必要があります
+                }
+
+                // HTML/CSS/JSファイルをコピー
+                string htmlContent = GetEmbeddedResource("menu.html");
+                string cssContent = GetEmbeddedResource("styles.css");
+                string jsContent = GetEmbeddedResource("menu.js");
+
+                if (!string.IsNullOrEmpty(htmlContent))
+                {
+                    File.WriteAllText(Path.Combine(webUiPath, "menu.html"), htmlContent);
+                }
+                
+                if (!string.IsNullOrEmpty(cssContent))
+                {
+                    File.WriteAllText(Path.Combine(webUiPath, "styles.css"), cssContent);
+                }
+                
+                if (!string.IsNullOrEmpty(jsContent))
+                {
+                    File.WriteAllText(Path.Combine(webUiPath, "menu.js"), jsContent);
+                }
+
+                // WebUIを読み込む
+                string htmlPath = Path.Combine(webUiPath, "menu.html");
+                if (File.Exists(htmlPath))
+                {
+                    webView.CoreWebView2.Navigate("file:///" + htmlPath);
+                }
+                else
+                {
+                    // HTML直接インライン読み込み（ファイルが見つからない場合のフォールバック）
+                    webView.CoreWebView2.NavigateToString(@"
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <meta charset='UTF-8'>
+                            <style>
+                                body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; background-color: #f0f0f0; }
+                                .menu-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+                                .menu-button { background-color: #4361ee; color: white; border: none; border-radius: 8px; padding: 15px; cursor: pointer; }
+                                .menu-button:hover { background-color: #3a56d4; }
+                            </style>
+                        </head>
+                        <body>
+                            <div id='menu-container' class='menu-container'></div>
+                            <script>
+                                document.addEventListener('DOMContentLoaded', async function() {
+                                    try {
+                                        const menuItems = await window.chrome.webview.hostObjects.menuData.getMenuItems();
+                                        const container = document.getElementById('menu-container');
+                                        
+                                        for (let i = 0; i < menuItems.length; i++) {
+                                            const item = menuItems[i];
+                                            if (!item.noUse) {
+                                                const button = document.createElement('button');
+                                                button.className = 'menu-button';
+                                                button.textContent = item.title;
+                                                button.addEventListener('click', function() {
+                                                    window.chrome.webview.postMessage({
+                                                        eventType: 'buttonClick',
+                                                        buttonIndex: i
+                                                    });
+                                                });
+                                                container.appendChild(button);
+                                            }
+                                        }
+                                    } catch (error) {
+                                        console.error('Error:', error);
+                                    }
+                                });
+                            </script>
+                        </body>
+                        </html>
+                    ");
+                }
+            }
+            catch (Exception ex)
+            {
+                // WebView2の初期化に失敗した場合は従来のUIに戻す
+                MessageBox.Show("WebView2の初期化に失敗しました。従来のUIに戻します。\n\n" + ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                useWebView = false;
+                webView = null;
+            }
+        }
+
+        /// <summary>
+        /// リソースファイルから内容を取得（開発時はファイルからそのまま読み込む）
+        /// </summary>
+        private string GetEmbeddedResource(string filename)
+        {
+            try
+            {
+                // 開発中はプロジェクトフォルダ内のファイルを直接使用
+                string devPath = Path.Combine(Application.StartupPath, "WebUI", filename);
+                if (File.Exists(devPath))
+                {
+                    return File.ReadAllText(devPath);
+                }
+
+                // 埋め込みリソースからの読み込み（ビルド後）
+                // ※実際のビルド設定で調整が必要
+                return "";
+            }
+            catch
+            {
+                return "";
+            }
+        }
+
+        /// <summary>
+        /// WebViewからのメッセージを処理するイベントハンドラ
+        /// </summary>
+        private void WebView_WebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
+        {
+            try
+            {
+                string jsonMessage = e.WebMessageAsJson;
+                WebViewMessage message = JsonSerializer.Deserialize<WebViewMessage>(jsonMessage, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+                switch (message.EventType)
+                {
+                    case "buttonClick":
+                        // ボタンクリックを処理
+                        ButtonClick(message.ButtonIndex);
+                        break;
+
+                    case "buttonHover":
+                        // ホバー状態を処理
+                        ToolStripStatusLabelGuide.Text = m_CMenuPage[message.ButtonIndex].Comment;
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("WebMessageReceived Error: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// WebViewのメニュー表示を更新する
+        /// </summary>
+        private async Task RefreshWebViewMenu()
+        {
+            if (webView != null && webView.CoreWebView2 != null)
+            {
+                try
+                {
+                    // JS側にメニュー再読み込み命令を送信
+                    await webView.CoreWebView2.ExecuteScriptAsync("loadMenuItems()");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("RefreshWebViewMenu Error: " + ex.Message);
+                }
+            }
         }
 
         #endregion
@@ -177,7 +397,11 @@ namespace HiMenu
                     {
                         m_CMenuPage.MenuItemsCountSet();
                         SetFormObject();
-                        GoButton(0);
+                        
+                        if (!useWebView)
+                        {
+                            GoButton(0);
+                        }
                     }
                 }
             }
@@ -203,7 +427,11 @@ namespace HiMenu
                         m_CMenuPage.MenuFileName = dlg.FileName;
                         m_CMenuPage.Initalize();
                         SetFormObject();
-                        GoButton(0);
+                        
+                        if (!useWebView)
+                        {
+                            GoButton(0);
+                        }
                     }
                 }
             }
@@ -222,16 +450,78 @@ namespace HiMenu
                         }
                         
                         CreateMenuScreenMain(dlg.FileName);
-                        GoButton(0);
+                        
+                        if (!useWebView)
+                        {
+                            GoButton(0);
+                        }
                     }
                 }
+            }
+            else if (MenuItem.Text.StartsWith("モダンUI"))
+            {
+                if (!useWebView)
+                {
+                    // 従来UIからモダンUIに切り替え
+                    useWebView = true;
+                    MenuItem.Text = "従来のUIに切り替え(&W)";
+                    HideTraditionalButtons();
+                    InitializeWebView().GetAwaiter();
+                }
+                else
+                {
+                    // モダンUIから従来UIに切り替え
+                    useWebView = false;
+                    MenuItem.Text = "モダンUIに切り替え(&W)";
+                    if (webView != null)
+                    {
+                        picContainer.Controls.Remove(webView);
+                        webView.Dispose();
+                        webView = null;
+                    }
+                    SetFormObject();
+                    GoButton(0);
+                }
+            }
+        }
+
+        /// <summary>
+        /// モダンUI/従来UI切り替えメニューの追加
+        /// </summary>
+        private void AddUIModeSwitchMenuItem()
+        {
+            // UIモード切り替えメニュー項目
+            var uiModeMenuItem = new ToolStripMenuItem(useWebView ? "従来のUIに切り替え(&W)" : "モダンUIに切り替え(&W)");
+            
+            // メニューの「表示」セクションに追加
+            int insertIndex = mnuFile.DropDownItems.IndexOf(mnuFileMemberOption);
+            if (insertIndex >= 0)
+            {
+                mnuFile.DropDownItems.Insert(insertIndex + 1, new ToolStripSeparator());
+                mnuFile.DropDownItems.Insert(insertIndex + 2, uiModeMenuItem);
+            }
+            else
+            {
+                mnuFile.DropDownItems.Add(new ToolStripSeparator());
+                mnuFile.DropDownItems.Add(uiModeMenuItem);
+            }
+        }
+
+        /// <summary>
+        /// 従来のボタンを非表示にする
+        /// </summary>
+        private void HideTraditionalButtons()
+        {
+            foreach (Button button in m_MenuButtons)
+            {
+                button.Visible = false;
             }
         }
 
         /// <summary>
         /// 「ファイル」「編集機能」フォームメニュー・サブメニュークリック（イベント）
         /// </summary>
-        public void mnuFileMemberLockMode_DropDownItemClicked(object Sender, ToolStripItemClickedEventArgs e)
+        public async void mnuFileMemberLockMode_DropDownItemClicked(object Sender, ToolStripItemClickedEventArgs e)
         {
             ToolStripMenuItem MenuItem = (ToolStripMenuItem)e.ClickedItem;
 
@@ -276,7 +566,15 @@ namespace HiMenu
                 {
                     SetMenuCheckEdit();
                     SetMenuCheckMode();
-                    SetFormObject();
+                    
+                    if (useWebView)
+                    {
+                        await RefreshWebViewMenu();
+                    }
+                    else
+                    {
+                        SetFormObject();
+                    }
                 }
             }
         }
@@ -290,6 +588,16 @@ namespace HiMenu
         /// </summary>
         private void mnuEdit_DropDownOpening(object sender, EventArgs e)
         {
+            // WebViewモードではメニュー項目を無効化
+            if (useWebView)
+            {
+                foreach (ToolStripItem item in mnuEdit.DropDownItems)
+                {
+                    item.Enabled = false;
+                }
+                return;
+            }
+
             int CurrentButton = m_MenuButtons.IndexOf((Button)this.ActiveControl);
 
             mnuEditMemberPaste.Enabled = (Clipboard.GetData("HiMenuItem") != null);
@@ -302,15 +610,18 @@ namespace HiMenu
         /// </summary>
         private void mnuEdit_DropDownClosed(object sender, EventArgs e)
         {
-            mnuEditMemberPaste.Enabled = true;
+            if (!useWebView)
+            {
+                mnuEditMemberPaste.Enabled = true;
+            }
         }
 
         /// <summary>
         /// 「編集」フォームメニュー・サブメニュークリック（イベント）
         /// </summary>
-        private void mnuEdit_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        private async void mnuEdit_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            if (!(e.ClickedItem is ToolStripMenuItem))
+            if (useWebView || !(e.ClickedItem is ToolStripMenuItem))
                 return;
 
             ToolStripMenuItem MenuItem = (ToolStripMenuItem)e.ClickedItem;
@@ -342,7 +653,14 @@ namespace HiMenu
             {
                 Clipboard.SetData("HiMenuItem", m_CMenuPage[CurrentButton]);
                 m_CMenuPage[CurrentButton] = new CMenuPage.CMenuFileItemInf();
-                SetFormObject();
+                if (useWebView)
+                {
+                    await RefreshWebViewMenu();
+                }
+                else
+                {
+                    SetFormObject();
+                }
             }
             else if (MenuItem == mnuEditMemberCopy || MenuItem == ToolStripMenuItemCopy)
             {
@@ -352,17 +670,38 @@ namespace HiMenu
             else if (MenuItem == mnuEditMemberPaste || MenuItem == ToolStripMenuItemPaste)
             {
                 m_CMenuPage[CurrentButton] = (CMenuPage.CMenuFileItemInf)Clipboard.GetData("HiMenuItem");
-                SetFormObject();
+                if (useWebView)
+                {
+                    await RefreshWebViewMenu();
+                }
+                else
+                {
+                    SetFormObject();
+                }
             }
             else if (MenuItem == mnuEditMemberDelete || MenuItem == ToolStripMenuItemDelete)
             {
                 m_CMenuPage[CurrentButton] = new CMenuPage.CMenuFileItemInf();
-                SetFormObject();
+                if (useWebView)
+                {
+                    await RefreshWebViewMenu();
+                }
+                else
+                {
+                    SetFormObject();
+                }
             }
             else if (MenuItem == mnuEditMemberHidden || MenuItem == ToolStripMenuItemHidden)
             {
                 m_CMenuPage.MenuFileItemHiddenChanged();
-                SetButtonDisp(CurrentButton, m_CMenuPage[CurrentButton].NoUse);
+                if (useWebView)
+                {
+                    await RefreshWebViewMenu();
+                }
+                else
+                {
+                    SetButtonDisp(CurrentButton, m_CMenuPage[CurrentButton].NoUse);
+                }
             }
             else if (MenuItem == mnuEditMemberEscape || MenuItem == ToolStripMenuItemEscape)
             {
@@ -374,10 +713,17 @@ namespace HiMenu
                 {
                     m_CMenuPage.CancelButton = CurrentButton;
                 }
-                SetFormObject();
+                if (useWebView)
+                {
+                    await RefreshWebViewMenu();
+                }
+                else
+                {
+                    SetFormObject();
+                }
             }
 
-            if (blnMove)
+            if (!useWebView && blnMove)
                 GoButton(CurrentButton);
         }
 
@@ -459,7 +805,7 @@ namespace HiMenu
         /// メニュー画面作成
         /// </summary>
         /// <param name="FileName">オープンするメニューファイル名</param>
-        private void CreateMenuScreenMain(string FileName, bool Starting = false)
+        private async void CreateMenuScreenMain(string FileName, bool Starting = false)
         {
             // 現在のサイズを記憶
             int intOldWidth = this.Width;
@@ -471,8 +817,16 @@ namespace HiMenu
             // メニューファイル読み込み
             m_CMenuPage.MenuFileRead();
 
-            // メニューフォーム内のボタン等の設定
-            SetFormObject();
+            // WebViewモードの場合はWebViewを更新
+            if (useWebView && webView != null && webView.CoreWebView2 != null)
+            {
+                await RefreshWebViewMenu();
+            }
+            else
+            {
+                // メニューフォーム内のボタン等の設定
+                SetFormObject();
+            }
 
             // メニューフォームの表示位置変更
             bool blnSetPos = false;
@@ -580,6 +934,46 @@ namespace HiMenu
         /// </summary>
         private void SetFormObject()
         {
+            // WebViewモードでは従来のボタン処理をスキップ
+            if (useWebView)
+            {
+                // キャプションとサイズ設定のみ行う
+                if (m_CMenuPage.MenuTitle.Length != 0)
+                {
+                    this.Text = Application.ProductName + " - " + m_CMenuPage.MenuTitle;
+                }
+                else
+                {
+                    this.Text = Application.ProductName;
+                }
+
+                // メニュー・ステータスバーの表示／非表示切り替え
+                if (m_CMenuPage.LockOn)
+                {
+                    mnuEdit.Visible = false;
+                }
+                else
+                {
+                    mnuEdit.Visible = m_CMenuPage.MenuVisible && (m_CMenuPage.LockOn == false);
+                }
+                
+                MainMenu1.Visible = m_CMenuPage.MenuVisible;
+                StatusStripInformation.Visible = m_CMenuPage.StatusBarVisible;
+
+                // ﾌｫｰﾑｻｲｽﾞ調整
+                this.Width = m_CMenuPage.MenuWidth;
+                this.Height = m_CMenuPage.MenuHeight;
+
+                SetMenuCheckEdit();
+                SetMenuCheckMode();
+
+                // 背景色の設定
+                pnlContainer.BackColor = ColorTranslator.FromOle(m_CMenuPage.BackColor);
+                picContainer.BackColor = ColorTranslator.FromOle(m_CMenuPage.BackColor);
+
+                return;
+            }
+
             const int intMarginX = 15;
             const int intMarginY = 8;
             int intIndex;
@@ -769,7 +1163,7 @@ namespace HiMenu
             this.CancelButton = null;
             if (m_CMenuPage.CancelButton != -1 && intNowItemCount > m_CMenuPage.CancelButton && m_CMenuPage.LockOn)
             {
-                this.CancelButton = m_MenuButtons[intIndex - 1];
+                this.CancelButton = m_MenuButtons[m_CMenuPage.CancelButton];
             }
             
             // 背景色の設定（pnlContainerとpicContainerの両方に設定）
@@ -832,7 +1226,7 @@ namespace HiMenu
         /// <summary>
         /// メニューボタンの表示／非表示の切り替え
         /// </summary>
-        private void SetButtonDisp(int intIndex, bool blnMode)
+        private async void SetButtonDisp(int intIndex, bool blnMode)
         {
             if (blnMode)
             {
@@ -860,7 +1254,14 @@ namespace HiMenu
             }
 
             // 変更があったボタンのキャプションを表示
-            SetFormObject();
+            if (useWebView)
+            {
+                await RefreshWebViewMenu();
+            }
+            else
+            {
+                SetFormObject();
+            }
         }
 
         #endregion
@@ -889,14 +1290,21 @@ namespace HiMenu
         /// <summary>
         /// メニューボタンクリック時の、編集モードの処理
         /// </summary>
-        private void ButtonEdit(int Index)
+        private async void ButtonEdit(int Index)
         {
             using (var frmDialog = new FormButtonEdit())
             {
                 if (frmDialog.ShowDialog(this) == DialogResult.OK)
                 {
-                    SetFormObject();
-                    GoButton(Index);
+                    if (useWebView)
+                    {
+                        await RefreshWebViewMenu();
+                    }
+                    else
+                    {
+                        SetFormObject();
+                        GoButton(Index);
+                    }
                 }
             }
         }
@@ -904,7 +1312,7 @@ namespace HiMenu
         /// <summary>
         /// メニューボタンクリック時の、実行モードの処理
         /// </summary>
-        private void ButtonExec(int Index)
+        private async void ButtonExec(int Index)
         {
             int intErrorNo = 0;
             string strErrorStr = "";
@@ -1047,13 +1455,16 @@ namespace HiMenu
 
                                 CreateMenuScreenMain(strNextMenuPath + strFileName);
 
-                                if (item.Attribute == CMenuPage.CMenuFileItemInf.ItemAttribute.BackPrevMenu)
+                                if (!useWebView)
                                 {
-                                    GoButton(intRevIndex);
-                                }
-                                else
-                                {
-                                    GoButton(0);
+                                    if (item.Attribute == CMenuPage.CMenuFileItemInf.ItemAttribute.BackPrevMenu)
+                                    {
+                                        GoButton(intRevIndex);
+                                    }
+                                    else
+                                    {
+                                        GoButton(0);
+                                    }
                                 }
                                 break;
                         }
@@ -1104,6 +1515,10 @@ namespace HiMenu
         /// </summary>
         private void FormKeyEvent(Keys KeyCode, int Shift, int intIndex)
         {
+            // WebViewモードではキー処理をスキップ
+            if (useWebView)
+                return;
+
             int intSaveIndex;
             int intNowRow;
             int intNowCol;
@@ -1197,6 +1612,10 @@ namespace HiMenu
         /// </summary>
         private void GoButton(int intIndex, bool valFlag = false)
         {
+            // WebViewモードでは処理をスキップ
+            if (useWebView)
+                return;
+
             int intLoop;
             Control objControl = this.ActiveControl;
 
